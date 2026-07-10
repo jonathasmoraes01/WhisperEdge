@@ -115,5 +115,10 @@ def transcribe(audio_data, local_model=None):
     else:
         transcription = transcribe_local(audio_data, local_model)
 
+    # WiprFlow: aprimoramento (LLM clean-up opcional + dicionario + snippets)
+    # aplicado ao texto nucleo, antes da formatacao final (espaco/pontuacao).
+    from text_processing import enhance_text
+    transcription = enhance_text(transcription.strip())
+
     return post_process_transcription(transcription)
 
