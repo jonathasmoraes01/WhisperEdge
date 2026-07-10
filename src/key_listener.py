@@ -281,9 +281,12 @@ class KeyListener:
         self.backends = []
         self.active_backend = None
         self.key_chord = None
+        self.command_key_chord = None  # WiprFlow: chord opcional do Command Mode
         self.callbacks = {
             "on_activate": [],
-            "on_deactivate": []
+            "on_deactivate": [],
+            "on_command_activate": [],
+            "on_command_deactivate": [],
         }
         self.load_activation_keys()
         self.initialize_backends()
@@ -357,6 +360,13 @@ class KeyListener:
         keys = self.parse_key_combination(key_combination)
         self.set_activation_keys(keys)
 
+        # WiprFlow: chord opcional do Command Mode (segunda hotkey).
+        self.command_key_chord = None
+        if ConfigManager.get_config_value('command_mode', 'enabled'):
+            cmd_combo = ConfigManager.get_config_value('command_mode', 'activation_key')
+            if cmd_combo:
+                self.command_key_chord = KeyChord(self.parse_key_combination(cmd_combo))
+
     def parse_key_combination(self, combination_string: str) -> Set[KeyCode | frozenset[KeyCode]]:
         """Parse a string representation of key combination into a set of KeyCodes."""
         keys = set()
@@ -384,18 +394,38 @@ class KeyListener:
         self.key_chord = KeyChord(keys)
 
     def on_input_event(self, event):
-        """Handle input events and trigger callbacks if the key chord becomes active or inactive."""
-        if not self.key_chord or not self.active_backend:
+        """Handle input events for the main and (optional) command chords.
+
+        Se ambos ativarem no mesmo evento (ex.: o command e um superset do main),
+        o Command Mode tem prioridade, evitando disparar o dictado normal junto.
+        """
+        if not self.active_backend:
             return
 
         key, event_type = event
 
-        was_active = self.key_chord.is_active()
-        is_active = self.key_chord.update(key, event_type)
+        main_act = main_deact = cmd_act = cmd_deact = False
 
-        if not was_active and is_active:
+        if self.command_key_chord is not None:
+            was = self.command_key_chord.is_active()
+            now = self.command_key_chord.update(key, event_type)
+            cmd_act = (not was and now)
+            cmd_deact = (was and not now)
+
+        if self.key_chord is not None:
+            was = self.key_chord.is_active()
+            now = self.key_chord.update(key, event_type)
+            main_act = (not was and now)
+            main_deact = (was and not now)
+
+        if cmd_act:
+            self._trigger_callbacks("on_command_activate")
+        elif main_act:
             self._trigger_callbacks("on_activate")
-        elif was_active and not is_active:
+
+        if cmd_deact:
+            self._trigger_callbacks("on_command_deactivate")
+        elif main_deact:
             self._trigger_callbacks("on_deactivate")
 
     def add_callback(self, event: str, callback: Callable):

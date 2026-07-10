@@ -32,11 +32,13 @@ class ResultThread(QThread):
     statusSignal = pyqtSignal(str)
     resultSignal = pyqtSignal(str)
 
-    def __init__(self, local_model=None):
+    def __init__(self, local_model=None, force_vad=False):
         """
         Initialize the ResultThread.
 
         :param local_model: Local transcription model (if applicable)
+        :param force_vad: WiprFlow — forca parada automatica por silencio (VAD),
+                          independente do recording_mode. Usado pelo Command Mode.
         """
         super().__init__()
         self.local_model = local_model
@@ -44,6 +46,7 @@ class ResultThread(QThread):
         self.is_running = True
         self.sample_rate = None
         self.speech_duration = 0.0  # WiprFlow: duracao da fala (segundos) p/ WPM
+        self.force_vad = force_vad
         self.mutex = QMutex()
 
     def stop_recording(self):
@@ -124,7 +127,7 @@ class ResultThread(QThread):
         # Create VAD only for recording modes that use it
         recording_mode = recording_options.get('recording_mode') or 'continuous'
         vad = None
-        if recording_mode in ('voice_activity_detection', 'continuous'):
+        if self.force_vad or recording_mode in ('voice_activity_detection', 'continuous'):
             vad = webrtcvad.Vad(2)  # VAD aggressiveness: 0 to 3, 3 being the most aggressive
             speech_detected = False
             silent_frame_count = 0

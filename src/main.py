@@ -64,6 +64,10 @@ class WhisperWriterApp(QObject):
         self.key_listener = KeyListener()
         self.key_listener.add_callback("on_activate", self.on_activation)
         self.key_listener.add_callback("on_deactivate", self.on_deactivation)
+        # WiprFlow: Command Mode (segunda hotkey)
+        self.key_listener.add_callback("on_command_activate", self.on_command_activation)
+        self.command_result_thread = None
+        self.command_target = ''
 
         model_options = ConfigManager.get_config_section('model_options')
         model_path = model_options.get('local', {}).get('model_path')
@@ -198,6 +202,39 @@ class WhisperWriterApp(QObject):
         if ConfigManager.get_config_value('recording_options', 'recording_mode') == 'continuous':
             self.start_result_thread()
         else:
+            self.key_listener.start()
+
+    def on_command_activation(self):
+        """WiprFlow — Command Mode: captura o texto-alvo e grava a instrucao falada."""
+        if not ConfigManager.get_config_value('command_mode', 'enabled'):
+            return
+        if self.command_result_thread and self.command_result_thread.isRunning():
+            self.command_result_thread.stop_recording()
+            return
+
+        from command_processor import get_target_text
+        self.command_target = get_target_text()
+
+        # Grava a instrucao com parada automatica por silencio (force_vad).
+        self.command_result_thread = ResultThread(self.local_model, force_vad=True)
+        if not ConfigManager.get_config_value('misc', 'hide_status_window'):
+            self.command_result_thread.statusSignal.connect(self.status_window.updateStatus)
+        self.command_result_thread.resultSignal.connect(self.on_command_complete)
+        self.command_result_thread.start()
+
+    def on_command_complete(self, instruction):
+        """WiprFlow — aplica a instrucao ao texto-alvo via LLM e digita o resultado."""
+        try:
+            instruction = (instruction or '').strip()
+            if instruction:
+                from command_processor import run_command
+                result = run_command(self.command_target, instruction)
+                if result:
+                    self.input_simulator.typewrite(result)
+        except Exception as e:
+            ConfigManager.console_print(f'[command] falha: {e}')
+        finally:
+            self.command_target = ''
             self.key_listener.start()
 
     def _record_dictation(self, result):
