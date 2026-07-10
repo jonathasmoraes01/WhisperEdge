@@ -15,7 +15,7 @@ from dotenv import set_key, load_dotenv
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit,
-    QPushButton, QComboBox, QCheckBox, QSpinBox, QPlainTextEdit, QTabWidget, QScrollArea,
+    QPushButton, QComboBox, QCheckBox, QSpinBox, QPlainTextEdit, QStackedWidget, QScrollArea,
     QFrame, QTableWidget, QTableWidgetItem, QListWidget, QListWidgetItem, QHeaderView,
     QSizePolicy, QMessageBox, QFileDialog,
 )
@@ -49,19 +49,59 @@ class SettingsWindow(BaseWindow):
         self.widgets = {}  # (category, sub, key) -> widget
         self._build()
 
+    # Navegacao lateral (icone + chave i18n), estilo SuperWhisper.
+    NAV = [
+        ('🏠', 'tab_general'),
+        ('🎙️', 'tab_recording'),
+        ('🧠', 'tab_model'),
+        ('✨', 'tab_enhance'),
+        ('📖', 'tab_dictionary'),
+        ('⚡', 'tab_snippets'),
+        ('🕘', 'tab_history'),
+        ('📊', 'tab_stats'),
+        ('ℹ️', 'tab_about'),
+    ]
+
     # ------------------------------------------------------------------ build
     def _build(self):
-        self.tabs = QTabWidget()
-        self.main_layout.addWidget(self.tabs)
+        body = QHBoxLayout()
+        body.setContentsMargins(0, 0, 0, 0)
+        body.setSpacing(14)
 
-        for tab_key, categories in CONFIG_TABS:
-            self.tabs.addTab(self._config_tab(categories), tr(tab_key))
+        # Sidebar
+        sidebar = QVBoxLayout()
+        sidebar.setSpacing(8)
+        brand = QLabel('WhisperEdge')
+        brand.setProperty('role', 'title')
+        sidebar.addWidget(brand)
+        self.nav = QListWidget()
+        self.nav.setObjectName('nav')
+        self.nav.setFixedWidth(188)
+        self.nav.setSpacing(2)
+        sidebar.addWidget(self.nav, 1)
+        body.addLayout(sidebar)
 
-        self.tabs.addTab(self._table_tab('dictionary'), tr('tab_dictionary'))
-        self.tabs.addTab(self._table_tab('snippets'), tr('tab_snippets'))
-        self.tabs.addTab(self._history_tab(), tr('tab_history'))
-        self.tabs.addTab(self._stats_tab(), tr('tab_stats'))
-        self.tabs.addTab(self._about_tab(), tr('tab_about'))
+        # Paginas
+        self.stack = QStackedWidget()
+        pages = [
+            self._config_tab(CONFIG_TABS[0][1]),
+            self._config_tab(CONFIG_TABS[1][1]),
+            self._config_tab(CONFIG_TABS[2][1]),
+            self._config_tab(CONFIG_TABS[3][1]),
+            self._table_tab('dictionary'),
+            self._table_tab('snippets'),
+            self._history_tab(),
+            self._stats_tab(),
+            self._about_tab(),
+        ]
+        for (icon, key), page in zip(self.NAV, pages):
+            QListWidgetItem(f"  {icon}   {tr(key)}", self.nav)
+            self.stack.addWidget(page)
+        self.nav.currentRowChanged.connect(self.stack.setCurrentIndex)
+        self.nav.setCurrentRow(0)
+        body.addWidget(self.stack, 1)
+
+        self.main_layout.addLayout(body, 1)
 
         footer = QHBoxLayout()
         reset_btn = QPushButton(tr('reset'))

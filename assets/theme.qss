@@ -106,3 +106,19 @@ QListWidget::item:selected { background: @ACCENT@; color: #fff; }
 QHeaderView::section {
     background: @PANEL2@; color: @MUTED@; border: none; padding: 6px;
 }
+
+/* Navegacao lateral das Configuracoes (estilo sidebar limpo) */
+QListWidget#nav {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 13px;
+}
+QListWidget#nav::item {
+    padding: 10px 12px;
+    border-radius: 9px;
+    color: @MUTED@;
+    margin: 1px 0;
+}
+QListWidget#nav::item:selected { background: @PANEL@; color: @TEXT@; }
+QListWidget#nav::item:hover:!selected { color: @TEXT@; }
