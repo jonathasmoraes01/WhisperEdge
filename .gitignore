@@ -135,3 +135,8 @@ src/config.yaml
 # WhisperEdge — locais
 _*.png
 *.log
+
+# Dados locais do usuario (nunca versionar)
+data/
+.env
+src/config.yaml
