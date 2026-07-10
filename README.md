@@ -49,6 +49,11 @@ de verdade** — parada no silêncio, viva quando você fala.
 - 🎙️ **Ditado local e offline** — modelos Whisper de `tiny` a `large-v3`;
   4 modos de gravação (parada por silêncio, contínuo, apertar p/ alternar,
   segurar p/ gravar).
+- ⚡ **GPU NVIDIA out-of-the-box** — com `device: auto` o app detecta CUDA e o
+  modelo carrega ~25× mais rápido (fallback automático para CPU). Basta
+  `pip install -r requirements-gpu.txt` — sem CUDA Toolkit.
+- 🗣️ **Pontuação por voz** *(opcional)* — fale "vírgula", "ponto final",
+  "nova linha" (ou "comma", "period", "new line") e vira pontuação.
 - 🌊 **Indicador flutuante** com waveform reativa, que nunca rouba o foco da
   janela onde você digita.
 - 📋 **Sempre no clipboard** — cada transcrição também fica pronta para colar
@@ -64,8 +69,8 @@ de verdade** — parada no silêncio, viva quando você fala.
 - ⚡ **Snippets por voz** — "meu email" → `voce@dominio.com`.
 - 🕘 **Histórico local** (SQLite) com app de origem, e 📊 **estatísticas**
   (palavras, velocidade WPM, sequência diária).
-- 🌐 **Interface em português e inglês**, tema escuro com cor de destaque
-  configurável, e configurações aplicadas **sem reiniciar**.
+- 🌐 **Interface em português, inglês e espanhol**, tema escuro com cor de
+  destaque configurável, e configurações aplicadas **sem reiniciar**.
 
 ## 🚀 Instalação
 
@@ -96,6 +101,10 @@ python -m venv --copies .venv
 
 > Na primeira execução, o modelo de transcrição (~460 MB no padrão `small`) é
 > baixado uma única vez e fica em cache.
+
+**GPU NVIDIA (opcional, instalação via código-fonte):**
+`.venv\Scripts\pip install -r requirements-gpu.txt` — o app passa a usar a GPU
+automaticamente (`device: auto`). O executável standalone usa CPU.
 
 Para abrir **sem nenhuma janela**, use `WhisperEdge.vbs`. Para iniciar junto
 com o Windows, coloque um atalho desse arquivo na pasta Inicializar
@@ -139,10 +148,19 @@ locais) — nenhum dos dois é versionado.
 
 ## 🗺️ Roadmap
 
-- [ ] Instalador `.exe` (sem precisar de Python)
-- [ ] Suporte a GPU NVIDIA out-of-the-box (CUDA)
-- [ ] Mais idiomas de interface
-- [ ] Modo de pontuação por comando de voz ("vírgula", "nova linha")
+Concluído na **v0.2.0**:
+
+- [x] Executável standalone (sem precisar de Python)
+- [x] Suporte a GPU NVIDIA out-of-the-box (CUDA)
+- [x] Mais idiomas de interface (espanhol)
+- [x] Pontuação por comando de voz ("vírgula", "nova linha")
+
+Próximos passos:
+
+- [ ] Instalador assinado (setup.exe) com atualização automática
+- [ ] GPU também na versão standalone (variante do ZIP com CUDA)
+- [ ] Seletor de microfone por nome (em vez de número do dispositivo)
+- [ ] Suporte a Linux/macOS
 
 ## 🤝 Contribuindo
 

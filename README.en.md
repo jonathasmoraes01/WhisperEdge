@@ -42,6 +42,11 @@ The floating dot is **draggable** (remembers its spot) and the waveform
 - 🎙️ **Local, offline dictation** — Whisper models from `tiny` to `large-v3`;
   4 recording modes (voice-activity stop, continuous, press-to-toggle,
   hold-to-record).
+- ⚡ **NVIDIA GPU out-of-the-box** — with `device: auto` the app detects CUDA
+  and models load ~25× faster (automatic CPU fallback). Just
+  `pip install -r requirements-gpu.txt` — no CUDA Toolkit needed.
+- 🗣️ **Spoken punctuation** *(optional)* — say "comma", "period", "new line"
+  (or "vírgula", "ponto final") and it becomes punctuation.
 - 🌊 **Floating indicator** with a voice-reactive waveform that never steals
   focus from the window you're typing into.
 - 📋 **Always on the clipboard** — every transcript is ready to paste even if
@@ -55,8 +60,8 @@ The floating dot is **draggable** (remembers its spot) and the waveform
   selected text ("summarize this", "make it formal") and it gets rewritten.
 - 📖 **Personal dictionary**, ⚡ **voice snippets**, 🕘 **local history**
   (SQLite) and 📊 **usage stats** (words, WPM, daily streak).
-- 🌐 **English & Portuguese UI**, dark theme with configurable accent,
-  settings applied **without restarting**.
+- 🌐 **English, Portuguese & Spanish UI**, dark theme with configurable
+  accent, settings applied **without restarting**.
 
 ## 🚀 Install
 
@@ -82,6 +87,10 @@ python -m venv --copies .venv
 
 > On first run, the transcription model (~460 MB for the default `small`) is
 > downloaded once and cached.
+
+**NVIDIA GPU (optional, source install):**
+`.venv\Scripts\pip install -r requirements-gpu.txt` — the app then uses the
+GPU automatically (`device: auto`). The standalone exe runs on CPU.
 
 Use `WhisperEdge.vbs` to launch with **no window at all**. To start with
 Windows, put a shortcut to it in `shell:startup`.
