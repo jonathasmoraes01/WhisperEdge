@@ -83,6 +83,12 @@ class WhisperEdgeApp(QObject):
 
         if not ConfigManager.get_config_value('misc', 'hide_status_window'):
             self.status_window = StatusWindow()
+            # Indicador persistente: fica visível como uma pílula discreta e
+            # expande no hover; os botões controlam gravação/config/janela.
+            self.status_window.recordClicked.connect(self.on_activation)
+            self.status_window.settingsClicked.connect(self.settings_window.show)
+            self.status_window.expandClicked.connect(self.main_window.show)
+            self.status_window.show()
 
         self.create_tray_icon()
 
@@ -178,7 +184,7 @@ class WhisperEdgeApp(QObject):
         self.result_thread = ResultThread(self.local_model)
         if not ConfigManager.get_config_value('misc', 'hide_status_window'):
             self.result_thread.statusSignal.connect(self.status_window.updateStatus)
-            self.status_window.closeSignal.connect(self.stop_result_thread)
+            self.result_thread.levelSignal.connect(self.status_window.setLevel)
         self.result_thread.resultSignal.connect(self.on_transcription_complete)
         self.result_thread.start()
 
@@ -194,6 +200,15 @@ class WhisperEdgeApp(QObject):
         When the transcription is complete, type the result and start listening for the activation key again.
         """
         self.input_simulator.typewrite(result)
+
+        # WhisperEdge: fallback de clipboard — deixa o texto pronto para colar
+        # caso nenhum campo estivesse focado quando voce ditou.
+        if result and ConfigManager.get_config_value('post_processing', 'copy_to_clipboard'):
+            try:
+                import pyperclip
+                pyperclip.copy(result)
+            except Exception as e:
+                ConfigManager.console_print(f'[clipboard] {e}')
 
         # WhisperEdge: registra o dictado no historico e nas estatisticas.
         self._record_dictation(result)
@@ -221,6 +236,7 @@ class WhisperEdgeApp(QObject):
         self.command_result_thread = ResultThread(self.local_model, force_vad=True)
         if not ConfigManager.get_config_value('misc', 'hide_status_window'):
             self.command_result_thread.statusSignal.connect(self.status_window.updateStatus)
+            self.command_result_thread.levelSignal.connect(self.status_window.setLevel)
         self.command_result_thread.resultSignal.connect(self.on_command_complete)
         self.command_result_thread.start()
 

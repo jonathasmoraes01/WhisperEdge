@@ -142,6 +142,10 @@ post_processing:
     value: false
     type: bool
     description: "Set to true to convert the transcribed text to lowercase."
+  copy_to_clipboard:
+    value: true
+    type: bool
+    description: "Tambem copia cada transcricao para a area de transferencia, para colar caso nenhum campo esteja focado."
   input_method:
     value: pynput
     type: str

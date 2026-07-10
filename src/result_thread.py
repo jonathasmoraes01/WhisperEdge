@@ -31,6 +31,7 @@ class ResultThread(QThread):
 
     statusSignal = pyqtSignal(str)
     resultSignal = pyqtSignal(str)
+    levelSignal = pyqtSignal(float)  # WhisperEdge: nivel de audio (0..1) p/ waveform reativa
 
     def __init__(self, local_model=None, force_vad=False):
         """
@@ -157,6 +158,14 @@ class ResultThread(QThread):
                 frame = np.array(list(audio_buffer), dtype=np.int16)
                 audio_buffer.clear()
                 recording.extend(frame)
+
+                # WhisperEdge: emite o nivel de audio (RMS normalizado, com ganho
+                # p/ visualizacao) para a waveform reagir a fala em tempo real.
+                try:
+                    rms = float(np.sqrt(np.mean(frame.astype(np.float32) ** 2))) / 32768.0
+                    self.levelSignal.emit(min(1.0, rms * 9.0))
+                except Exception:
+                    pass
 
                 # Avoid trying to detect voice in initial frames
                 if initial_frames_to_skip > 0:
