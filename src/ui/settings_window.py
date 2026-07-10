@@ -31,7 +31,7 @@ import stats as stats_mod
 
 load_dotenv()
 
-APP_VERSION = '0.1.0'
+APP_VERSION = '0.2.0'
 
 # Páginas de configuração: (chave i18n, categorias do schema)
 CONFIG_PAGES = [

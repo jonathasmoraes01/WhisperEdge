@@ -63,11 +63,14 @@ The floating dot is **draggable** (remembers its spot) and the waveform
 **Requirements:** Windows 10/11, [Python 3.11](https://www.python.org/downloads/)
 (check *"Add python.exe to PATH"*), a microphone.
 
-**Option A — auto installer:** download the project
-([latest release ZIP](../../releases/latest) or `git clone`) and double-click
-**`install.bat`**.
+**Option A — standalone exe (no Python needed):** download
+**`WhisperEdge-x.x.x-standalone-win64.zip`** from the
+[releases page](../../releases/latest), extract, open **`WhisperEdge.exe`**.
 
-**Option B — manual:**
+**Option B — auto installer (source):** requires Python 3.11 — download the
+project and double-click **`install.bat`** (includes optional GPU setup).
+
+**Option C — manual:**
 
 ```bash
 git clone https://github.com/jonathasmoraes01/WhisperEdge.git

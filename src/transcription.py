@@ -62,6 +62,12 @@ def create_local_model():
     try:
         ConfigManager.console_print(f'Loading model on {device} ({compute_type})...')
         model = WhisperModel(model_name, device=device, compute_type=compute_type)
+        if device == 'cuda':
+            # A criacao pode passar SEM cuBLAS/cuDNN — o erro so aparece no
+            # primeiro encode. Validamos com um aquecimento curto para cair
+            # para CPU agora, e nao no primeiro ditado do usuario.
+            segments, _ = model.transcribe(np.zeros(1600, dtype=np.float32), language='en')
+            next(iter(segments), None)
     except Exception as e:
         ConfigManager.console_print(f'Error initializing WhisperModel on {device}: {e}')
         ConfigManager.console_print('Falling back to CPU (int8).')

@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.0] - 2026-07-10
+
+Roadmap da 0.1 completo.
+
+### Added
+- **Executável standalone** (`WhisperEdge.exe`, PyInstaller): roda sem instalar
+  Python — baixe o ZIP `standalone`, extraia e abra.
+- **GPU NVIDIA out-of-the-box**: `device: auto` detecta CUDA e usa `float16`
+  (modelo carrega ~25× mais rápido); DLLs cuBLAS/cuDNN vêm dos wheels pip
+  (`requirements-gpu.txt`, opção no `install.bat`) — sem CUDA Toolkit; fallback
+  gracioso para CPU `int8`.
+- **Pontuação por voz** (opt-in, `post_processing.spoken_punctuation`): fale
+  "vírgula", "ponto final", "nova linha", "comma", "period"… e vire pontuação;
+  substituição em passada única, sem cascata.
+- **Espanhol (es)** na interface (auto-detectado pelo sistema).
+
 ## [0.1.0] - 2026-07-10
 
 Primeira versão pública do **WhisperEdge** — ditado por voz local e privado,

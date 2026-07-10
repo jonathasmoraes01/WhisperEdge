@@ -1,8 +1,13 @@
 """Caminhos centrais do WhisperEdge (raiz do app, pasta de dados, assets)."""
 import os
+import sys
 
-# Raiz do repositorio (um nivel acima de src/)
-APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if getattr(sys, 'frozen', False):
+    # Executavel PyInstaller: tudo relativo a pasta do .exe
+    APP_ROOT = os.path.dirname(os.path.abspath(sys.executable))
+else:
+    # Modo fonte: raiz do repositorio (um nivel acima de src/)
+    APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(APP_ROOT, 'data')
 ASSETS_DIR = os.path.join(APP_ROOT, 'assets')
 

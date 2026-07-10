@@ -69,17 +69,22 @@ de verdade** — parada no silêncio, viva quando você fala.
 
 ## 🚀 Instalação
 
-**Pré-requisitos:** Windows 10/11, [Python 3.11](https://www.python.org/downloads/)
-(marque *"Add python.exe to PATH"* na instalação) e um microfone.
+### Opção A — executável (não precisa de Python)
 
-### Opção A — instalador automático
+1. Baixe o **`WhisperEdge-x.x.x-standalone-win64.zip`** na
+   [página de releases](../../releases/latest).
+2. Extraia onde quiser e abra **`WhisperEdge.exe`**.
 
-1. Baixe o projeto ([ZIP da última versão](../../releases/latest) ou `git clone`).
-2. Dê dois cliques em **`install.bat`**.
-3. Pronto — o instalador cria o ambiente, baixa as dependências, cria os
-   atalhos e abre o app.
+### Opção B — instalador automático (código-fonte)
 
-### Opção B — manual
+Requer [Python 3.11](https://www.python.org/downloads/) (marque *"Add
+python.exe to PATH"*).
+
+1. Baixe o projeto ([ZIP](../../releases/latest) ou `git clone`).
+2. Dê dois cliques em **`install.bat`** — ele cria o ambiente, instala as
+   dependências (com opção de GPU), cria os atalhos e abre o app.
+
+### Opção C — manual
 
 ```bash
 git clone https://github.com/jonathasmoraes01/WhisperEdge.git

@@ -158,6 +158,13 @@ class WhisperEdgeApp(QObject):
         Atalhos, tema, indicador e idioma sao aplicados na hora. O modelo de
         transcricao so e recarregado (em segundo plano) se suas opcoes mudarem.
         """
+        # Primeiro uso: os componentes ainda nao existem (config acabou de ser
+        # criada na tela inicial) — inicializa tudo em vez de hot-apply.
+        if not hasattr(self, 'key_listener'):
+            self.initialize_components()
+            self.key_listener.start()
+            return
+
         # Tema/cores
         from theme import apply_theme
         apply_theme(self.app)

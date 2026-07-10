@@ -116,6 +116,8 @@ class ConfigManager:
         """Save the current configuration to a YAML file."""
         if cls._instance is None:
             raise RuntimeError("ConfigManager not initialized")
+        # No executavel, a pasta src/ pode nao existir ainda ao lado do .exe.
+        os.makedirs(os.path.dirname(config_path) or '.', exist_ok=True)
         with open(config_path, 'w') as file:
             yaml.dump(cls._instance.config, file, default_flow_style=False)
 
