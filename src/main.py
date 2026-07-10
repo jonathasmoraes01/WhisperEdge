@@ -41,6 +41,10 @@ class WhisperWriterApp(QObject):
 
         ConfigManager.initialize()
 
+        # Tema central (dark por padrao) aplicado a toda a aplicacao.
+        from theme import apply_theme
+        apply_theme(self.app)
+
         self.settings_window = SettingsWindow()
         self.settings_window.settings_closed.connect(self.on_settings_closed)
         self.settings_window.settings_saved.connect(self.restart_app)

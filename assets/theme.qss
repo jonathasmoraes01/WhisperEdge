@@ -1,0 +1,108 @@
+/* WiprFlow — folha de estilo central (placeholders @VAR@ substituidos em theme.py) */
+
+QWidget {
+    background-color: @BG@;
+    color: @TEXT@;
+    font-family: "Segoe UI", "Inter", sans-serif;
+    font-size: 13px;
+}
+
+QLabel { background: transparent; }
+QLabel[role="title"]    { font-size: 20px; font-weight: 700; color: @TEXT@; }
+QLabel[role="subtitle"] { font-size: 13px; color: @MUTED@; }
+QLabel[role="muted"]    { color: @MUTED@; }
+QLabel[role="stat"]     { font-size: 26px; font-weight: 700; color: @ACCENT@; }
+
+/* Cartoes / painéis */
+QFrame[role="card"] {
+    background-color: @PANEL@;
+    border: 1px solid @BORDER@;
+    border-radius: 14px;
+}
+
+/* Campos de entrada */
+QLineEdit, QComboBox, QSpinBox, QPlainTextEdit, QTextEdit {
+    background-color: @PANEL2@;
+    border: 1px solid @BORDER@;
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: @TEXT@;
+    selection-background-color: @ACCENT@;
+}
+QLineEdit:focus, QComboBox:focus, QSpinBox:focus,
+QPlainTextEdit:focus, QTextEdit:focus {
+    border: 1px solid @ACCENT@;
+}
+QComboBox::drop-down { border: none; width: 22px; }
+QComboBox QAbstractItemView {
+    background-color: @PANEL2@;
+    border: 1px solid @BORDER@;
+    selection-background-color: @ACCENT@;
+    outline: none;
+}
+
+/* Botoes */
+QPushButton {
+    background-color: @PANEL2@;
+    border: 1px solid @BORDER@;
+    border-radius: 9px;
+    padding: 8px 16px;
+    color: @TEXT@;
+    font-weight: 600;
+}
+QPushButton:hover { border: 1px solid @ACCENT@; }
+QPushButton:pressed { background-color: @PANEL@; }
+QPushButton[role="primary"] {
+    background-color: @ACCENT@;
+    border: 1px solid @ACCENT@;
+    color: #ffffff;
+}
+QPushButton[role="primary"]:hover { background-color: @ACCENT_HOVER@; border-color: @ACCENT_HOVER@; }
+QPushButton[role="danger"] { color: #ff6b6b; }
+QPushButton[role="ghost"] { background: transparent; border: none; color: @MUTED@; }
+QPushButton[role="ghost"]:hover { color: @TEXT@; }
+
+/* Abas */
+QTabWidget::pane { border: none; top: -1px; }
+QTabBar::tab {
+    background: transparent;
+    color: @MUTED@;
+    padding: 9px 16px;
+    margin-right: 4px;
+    border: none;
+    border-radius: 9px;
+    font-weight: 600;
+}
+QTabBar::tab:selected { background: @PANEL@; color: @TEXT@; }
+QTabBar::tab:hover:!selected { color: @TEXT@; }
+
+/* Checkbox */
+QCheckBox { spacing: 8px; background: transparent; }
+QCheckBox::indicator {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    border: 1px solid @BORDER@;
+    background: @PANEL2@;
+}
+QCheckBox::indicator:checked { background: @ACCENT@; border-color: @ACCENT@; }
+
+/* Scroll */
+QScrollArea { border: none; background: transparent; }
+QScrollBar:vertical { background: transparent; width: 10px; margin: 2px; }
+QScrollBar::handle:vertical { background: @BORDER@; border-radius: 5px; min-height: 30px; }
+QScrollBar::handle:vertical:hover { background: @MUTED@; }
+QScrollBar::add-line, QScrollBar::sub-line { height: 0; }
+QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
+
+/* Listas / tabelas */
+QListWidget, QTableWidget {
+    background-color: @PANEL@;
+    border: 1px solid @BORDER@;
+    border-radius: 10px;
+    outline: none;
+}
+QListWidget::item { padding: 8px; border-radius: 6px; }
+QListWidget::item:selected { background: @ACCENT@; color: #fff; }
+QHeaderView::section {
+    background: @PANEL2@; color: @MUTED@; border: none; padding: 6px;
+}

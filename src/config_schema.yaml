@@ -165,3 +165,118 @@ misc:
     value: false
     type: bool
     description: "Set to true to play a noise after the transcription has been typed out."
+
+# ---------------------------------------------------------------------------
+# WiprFlow — opcoes adicionais (interface, LLM, command mode, dados locais)
+# ---------------------------------------------------------------------------
+
+# Aparencia / idioma da interface
+ui:
+  language:
+    value: auto
+    type: str
+    description: "Idioma da interface. 'auto' segue o idioma do sistema."
+    options:
+      - auto
+      - en
+      - pt
+  theme:
+    value: dark
+    type: str
+    description: "Tema visual da interface."
+    options:
+      - dark
+      - light
+  accent_color:
+    value: "#6C5CE7"
+    type: str
+    description: "Cor de destaque (hex) usada em realces e na waveform."
+
+# Pos-processamento opcional por LLM ('clean-up'). 100% opcional e desligavel.
+llm_post_processing:
+  enabled:
+    value: false
+    type: bool
+    description: "Ligar/desligar a limpeza do texto por LLM apos a transcricao."
+  provider:
+    value: openai
+    type: str
+    description: "Provedor do LLM. openai = qualquer endpoint OpenAI-compat; ollama = local."
+    options:
+      - openai
+      - anthropic
+      - ollama
+  base_url:
+    value: "https://api.openai.com/v1"
+    type: str
+    description: "URL base da API (OpenAI-compat/Ollama). Ex.: http://localhost:11434/v1 para Ollama."
+  model:
+    value: "gpt-4o-mini"
+    type: str
+    description: "Modelo do LLM a usar para a limpeza."
+  api_key:
+    value: null
+    type: str
+    description: "Chave de API (se vazio, usa a variavel de ambiente OPENAI_API_KEY/ANTHROPIC_API_KEY)."
+  timeout:
+    value: 20
+    type: int
+    description: "Timeout em segundos das chamadas ao LLM (se estourar, cai no texto sem limpeza)."
+  system_prompt:
+    value: "Voce e um editor. Reescreva a transcricao ditada corrigindo pontuacao, capitalizacao e removendo hesitacoes e palavras de preenchimento (um, uh, tipo, ne). Nao adicione conteudo novo, nao responda a pergunta nenhuma, apenas devolva o texto limpo. Mantenha o idioma original."
+    type: str
+    description: "Prompt de sistema usado na limpeza por LLM."
+
+# Command Mode: falar uma INSTRUCAO sobre o texto selecionado/clipboard.
+command_mode:
+  enabled:
+    value: false
+    type: bool
+    description: "Ligar o Command Mode (requer llm_post_processing configurado ou provedor proprio)."
+  activation_key:
+    value: "ctrl+alt+space"
+    type: str
+    description: "Atalho para o Command Mode."
+  source:
+    value: selection
+    type: str
+    description: "De onde pegar o texto-alvo: 'selection' (copia a selecao com Ctrl+C) ou 'clipboard'."
+    options:
+      - selection
+      - clipboard
+  system_prompt:
+    value: "Voce edita texto conforme a instrucao falada pelo usuario. Recebe um TEXTO e uma INSTRUCAO. Aplique a instrucao e devolva SOMENTE o texto resultante, sem comentarios."
+    type: str
+    description: "Prompt de sistema do Command Mode."
+
+# Dicionario pessoal (correcoes forcadas na saida). Entradas ficam em data/dictionary.json.
+dictionary:
+  enabled:
+    value: true
+    type: bool
+    description: "Aplicar correcoes do dicionario pessoal na transcricao."
+
+# Snippets por voz (gatilho falado -> expansao). Entradas em data/snippets.json.
+snippets:
+  enabled:
+    value: true
+    type: bool
+    description: "Expandir snippets de voz na transcricao."
+
+# Historico de dictados (persistente em data/history.db).
+history:
+  enabled:
+    value: true
+    type: bool
+    description: "Salvar cada transcricao no historico local."
+  max_entries:
+    value: 2000
+    type: int
+    description: "Numero maximo de entradas guardadas no historico."
+
+# Estatisticas de uso (palavras, WPM, streak). Persistem em data/stats.json.
+stats:
+  enabled:
+    value: true
+    type: bool
+    description: "Coletar estatisticas de uso (contagem de palavras, WPM, streak diario)."
