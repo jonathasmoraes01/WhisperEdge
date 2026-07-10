@@ -28,9 +28,10 @@ from ui.status_window import StatusWindow
 from transcription import create_local_model
 from input_simulation import InputSimulator
 from utils import ConfigManager
+from i18n import tr
 
 
-class WhisperWriterApp(QObject):
+class WiprFlowApp(QObject):
     def __init__(self):
         """
         Initialize the application, opening settings window if no configuration file is found.
@@ -95,18 +96,19 @@ class WhisperWriterApp(QObject):
         Create the system tray icon and its context menu.
         """
         self.tray_icon = QSystemTrayIcon(QIcon(os.path.join('assets', 'ww-logo.png')), self.app)
+        self.tray_icon.setToolTip('WiprFlow')
 
         tray_menu = QMenu()
 
-        show_action = QAction('WhisperWriter Main Menu', self.app)
+        show_action = QAction(tr('open_main'), self.app)
         show_action.triggered.connect(self.main_window.show)
         tray_menu.addAction(show_action)
 
-        settings_action = QAction('Open Settings', self.app)
+        settings_action = QAction(tr('open_settings'), self.app)
         settings_action.triggered.connect(self.settings_window.show)
         tray_menu.addAction(settings_action)
 
-        exit_action = QAction('Exit', self.app)
+        exit_action = QAction(tr('exit'), self.app)
         exit_action.triggered.connect(self.exit_app)
         tray_menu.addAction(exit_action)
 
@@ -260,5 +262,5 @@ class WhisperWriterApp(QObject):
 
 
 if __name__ == '__main__':
-    app = WhisperWriterApp()
+    app = WiprFlowApp()
     app.run()

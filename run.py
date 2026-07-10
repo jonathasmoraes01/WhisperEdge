@@ -10,6 +10,6 @@ if sys.stdout is None:
 if sys.stderr is None:
     sys.stderr = open(os.devnull, 'w')
 
-print('Starting WhisperWriter...')
+print('Starting WiprFlow...')
 load_dotenv()
 subprocess.run([sys.executable, os.path.join('src', 'main.py')])
