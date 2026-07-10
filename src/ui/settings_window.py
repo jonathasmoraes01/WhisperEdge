@@ -1,11 +1,11 @@
 """
-WhisperEdge — janela de Configuracoes redesenhada, com abas limpas:
-Geral, Gravacao, Modelo, Aprimorar (LLM/Command), Dicionario, Snippets,
-Historico, Estatisticas e Sobre. Tema escuro central (QSS) + i18n EN/PT.
+WhisperEdge — janela de Configurações.
 
-As abas de config sao geradas a partir do schema (fonte unica da verdade);
-Dicionario/Snippets tem editores em tabela; Historico e Estatisticas tem vistas
-proprias. Mantem o contrato usado pelo app: sinais settings_closed/settings_saved.
+Layout estilo SuperWhisper: sidebar de navegação à esquerda (texto, sem emojis,
+com barra de destaque no item ativo) e páginas à direita. Cada configuração é
+uma linha com título + descrição à esquerda e o controle à direita (switch para
+booleanos). Rótulos amigáveis PT/EN vêm de i18n.FIELD_META — o schema segue
+sendo a fonte da verdade dos campos.
 """
 import os
 import sys
@@ -14,29 +14,35 @@ import time
 from dotenv import set_key, load_dotenv
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QLineEdit,
-    QPushButton, QComboBox, QCheckBox, QSpinBox, QPlainTextEdit, QStackedWidget, QScrollArea,
-    QFrame, QTableWidget, QTableWidgetItem, QListWidget, QListWidgetItem, QHeaderView,
-    QSizePolicy, QMessageBox, QFileDialog,
+    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
+    QPushButton, QComboBox, QCheckBox, QSpinBox, QPlainTextEdit, QStackedWidget,
+    QScrollArea, QFrame, QTableWidget, QTableWidgetItem, QListWidget,
+    QListWidgetItem, QHeaderView, QGridLayout, QMessageBox,
 )
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from ui.base_window import BaseWindow
+from ui.widgets import Switch
 from utils import ConfigManager
-from i18n import tr
+from i18n import tr, field_label, field_desc, section_title
 import text_processing
 import history as history_mod
 import stats as stats_mod
 
 load_dotenv()
 
-# Agrupamento das secoes do schema em abas logicas.
-CONFIG_TABS = [
+APP_VERSION = '1.1'
+
+# Páginas de configuração: (chave i18n, categorias do schema)
+CONFIG_PAGES = [
     ('tab_general', ['misc', 'ui']),
     ('tab_recording', ['recording_options', 'post_processing']),
     ('tab_model', ['model_options']),
-    ('tab_enhance', ['llm_post_processing', 'command_mode', 'dictionary', 'snippets', 'history', 'stats']),
+    ('tab_enhance', ['llm_post_processing', 'command_mode', 'dictionary',
+                     'snippets', 'history', 'stats']),
 ]
+
+CONTROL_WIDTH = 230  # largura padrão dos controles à direita
 
 
 class SettingsWindow(BaseWindow):
@@ -44,58 +50,50 @@ class SettingsWindow(BaseWindow):
     settings_saved = pyqtSignal()
 
     def __init__(self):
-        super().__init__(tr('settings'), 780, 660)
+        super().__init__(tr('settings'), 860, 640)
         self.schema = ConfigManager.get_schema()
         self.widgets = {}  # (category, sub, key) -> widget
         self._build()
 
-    # Navegacao lateral (icone + chave i18n), estilo SuperWhisper.
-    NAV = [
-        ('🏠', 'tab_general'),
-        ('🎙️', 'tab_recording'),
-        ('🧠', 'tab_model'),
-        ('✨', 'tab_enhance'),
-        ('📖', 'tab_dictionary'),
-        ('⚡', 'tab_snippets'),
-        ('🕘', 'tab_history'),
-        ('📊', 'tab_stats'),
-        ('ℹ️', 'tab_about'),
-    ]
-
     # ------------------------------------------------------------------ build
     def _build(self):
         body = QHBoxLayout()
-        body.setContentsMargins(0, 0, 0, 0)
-        body.setSpacing(14)
+        body.setContentsMargins(4, 4, 4, 0)
+        body.setSpacing(16)
 
-        # Sidebar
-        sidebar = QVBoxLayout()
-        sidebar.setSpacing(8)
+        # ---- Sidebar
+        side = QVBoxLayout()
+        side.setSpacing(2)
         brand = QLabel('WhisperEdge')
         brand.setProperty('role', 'title')
-        sidebar.addWidget(brand)
+        tagline = QLabel(tr('app_tagline'))
+        tagline.setProperty('role', 'subtitle')
+        side.addWidget(brand)
+        side.addWidget(tagline)
+        side.addSpacing(14)
+
         self.nav = QListWidget()
         self.nav.setObjectName('nav')
-        self.nav.setFixedWidth(188)
-        self.nav.setSpacing(2)
-        sidebar.addWidget(self.nav, 1)
-        body.addLayout(sidebar)
+        self.nav.setFixedWidth(180)
+        side.addWidget(self.nav, 1)
 
-        # Paginas
+        version = QLabel(f'v{APP_VERSION}')
+        version.setProperty('role', 'muted')
+        side.addWidget(version)
+        body.addLayout(side)
+
+        # ---- Páginas
         self.stack = QStackedWidget()
-        pages = [
-            self._config_tab(CONFIG_TABS[0][1]),
-            self._config_tab(CONFIG_TABS[1][1]),
-            self._config_tab(CONFIG_TABS[2][1]),
-            self._config_tab(CONFIG_TABS[3][1]),
-            self._table_tab('dictionary'),
-            self._table_tab('snippets'),
-            self._history_tab(),
-            self._stats_tab(),
-            self._about_tab(),
+        nav_items = [tr(k) for k, _ in CONFIG_PAGES] + [
+            tr('tab_dictionary'), tr('tab_snippets'),
+            tr('tab_history'), tr('tab_stats'), tr('tab_about'),
         ]
-        for (icon, key), page in zip(self.NAV, pages):
-            QListWidgetItem(f"  {icon}   {tr(key)}", self.nav)
+        pages = [self._config_page(cats) for _, cats in CONFIG_PAGES] + [
+            self._table_page('dictionary'), self._table_page('snippets'),
+            self._history_page(), self._stats_page(), self._about_page(),
+        ]
+        for text, page in zip(nav_items, pages):
+            QListWidgetItem(text, self.nav)
             self.stack.addWidget(page)
         self.nav.currentRowChanged.connect(self.stack.setCurrentIndex)
         self.nav.setCurrentRow(0)
@@ -103,12 +101,15 @@ class SettingsWindow(BaseWindow):
 
         self.main_layout.addLayout(body, 1)
 
+        # ---- Rodapé
         footer = QHBoxLayout()
+        footer.setContentsMargins(4, 8, 4, 4)
         reset_btn = QPushButton(tr('reset'))
         reset_btn.setProperty('role', 'ghost')
         reset_btn.clicked.connect(self.reset_settings)
         save_btn = QPushButton(tr('save'))
         save_btn.setProperty('role', 'primary')
+        save_btn.setMinimumWidth(120)
         save_btn.clicked.connect(self.save_settings)
         footer.addWidget(reset_btn)
         footer.addStretch(1)
@@ -122,54 +123,95 @@ class SettingsWindow(BaseWindow):
         area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         return area
 
-    def _config_tab(self, categories):
+    # ----------------------------------------------------------- config pages
+    def _config_page(self, categories):
         inner = QWidget()
         layout = QVBoxLayout(inner)
-        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setContentsMargins(4, 4, 12, 12)
         layout.setSpacing(14)
+
         for category in categories:
             settings = self.schema.get(category, {})
             if not settings:
                 continue
-            card = QFrame()
-            card.setProperty('role', 'card')
-            grid = QGridLayout(card)
-            grid.setContentsMargins(16, 14, 16, 14)
-            grid.setVerticalSpacing(10)
-            grid.setHorizontalSpacing(12)
+            # separa folhas (sem sub) de subgrupos
+            leafs = [(k, m) for k, m in settings.items()
+                     if isinstance(m, dict) and 'value' in m]
+            groups = [(k, m) for k, m in settings.items()
+                      if not (isinstance(m, dict) and 'value' in m)]
 
-            title = QLabel(category.replace('_', ' ').title())
-            title.setProperty('role', 'subtitle')
-            grid.addWidget(title, 0, 0, 1, 2)
-
-            row = 1
-            for sub, meta in settings.items():
-                if isinstance(meta, dict) and 'value' in meta:
-                    row = self._add_row(grid, row, category, None, sub, meta)
-                else:
-                    for key, leaf in meta.items():
-                        row = self._add_row(grid, row, category, sub, key, leaf)
-            layout.addWidget(card)
+            if leafs:
+                layout.addWidget(self._card(section_title(category),
+                                            [(category, None, k, m) for k, m in leafs]))
+            for sub, submeta in groups:
+                layout.addWidget(self._card(section_title(category, sub),
+                                            [(category, sub, k, m) for k, m in submeta.items()]))
         layout.addStretch(1)
         return self._scroll(inner)
 
-    def _add_row(self, grid, row, category, sub, key, meta):
-        label = QLabel(key.replace('_', ' ').capitalize())
-        label.setToolTip(meta.get('description', ''))
-        widget = self._make_widget(category, sub, key, meta)
-        if widget is None:
-            return row
-        self.widgets[(category, sub, key)] = widget
-        grid.addWidget(label, row, 0)
-        grid.addWidget(widget, row, 1)
-        return row + 1
+    def _card(self, title, fields):
+        card = QFrame()
+        card.setProperty('role', 'card')
+        v = QVBoxLayout(card)
+        v.setContentsMargins(18, 14, 18, 14)
+        v.setSpacing(0)
+
+        head = QLabel(title.upper())
+        head.setProperty('role', 'section')
+        v.addWidget(head)
+        v.addSpacing(6)
+
+        for i, (category, sub, key, meta) in enumerate(fields):
+            if i > 0:
+                line = QFrame()
+                line.setProperty('role', 'hline')
+                line.setFixedHeight(1)
+                v.addWidget(line)
+            v.addWidget(self._row(category, sub, key, meta))
+        return card
+
+    def _row(self, category, sub, key, meta):
+        """Linha de configuração: título+descrição à esquerda, controle à direita.
+        Prompts (textos longos) ocupam a largura toda, abaixo do título."""
+        roww = QWidget()
+        control = self._make_widget(category, sub, key, meta)
+        self.widgets[(category, sub, key)] = control
+
+        name = QLabel(field_label(category, sub, key))
+        name.setProperty('role', 'fieldname')
+        desc_text = field_desc(category, sub, key) or meta.get('description', '')
+        desc = QLabel(desc_text)
+        desc.setProperty('role', 'fielddesc')
+        desc.setWordWrap(True)
+        desc.setVisible(bool(desc_text))
+
+        left = QVBoxLayout()
+        left.setSpacing(2)
+        left.addWidget(name)
+        left.addWidget(desc)
+
+        if isinstance(control, QPlainTextEdit):
+            v = QVBoxLayout(roww)
+            v.setContentsMargins(0, 10, 0, 10)
+            v.setSpacing(6)
+            v.addLayout(left)
+            v.addWidget(control)
+        else:
+            h = QHBoxLayout(roww)
+            h.setContentsMargins(0, 10, 0, 10)
+            h.setSpacing(16)
+            h.addLayout(left, 1)
+            if not isinstance(control, Switch):
+                control.setFixedWidth(CONTROL_WIDTH)
+            h.addWidget(control, 0, Qt.AlignRight | Qt.AlignVCenter)
+        return roww
 
     def _make_widget(self, category, sub, key, meta):
         mtype = meta.get('type')
         value = self._current_value(category, sub, key, meta)
 
         if mtype == 'bool':
-            w = QCheckBox()
+            w = Switch()
             w.setChecked(bool(value))
             return w
         if mtype == 'str' and 'options' in meta:
@@ -185,16 +227,16 @@ class SettingsWindow(BaseWindow):
             except (TypeError, ValueError):
                 w.setValue(0)
             return w
-        if 'prompt' in key:  # textos longos -> multi-linha
+        if 'prompt' in key:
             w = QPlainTextEdit()
             w.setPlainText('' if value is None else str(value))
-            w.setFixedHeight(90)
+            w.setFixedHeight(84)
             return w
         w = QLineEdit('' if value is None else str(value))
         if key == 'api_key':
             w.setEchoMode(QLineEdit.Password)
             w.setText(os.getenv('OPENAI_API_KEY') or ('' if value is None else str(value)))
-            w.setPlaceholderText('sk-…  (ou deixe vazio p/ usar variavel de ambiente)')
+            w.setPlaceholderText('sk-…')
         return w
 
     def _current_value(self, category, sub, key, meta):
@@ -204,11 +246,11 @@ class SettingsWindow(BaseWindow):
             v = ConfigManager.get_config_value(category, key)
         return meta['value'] if v is None else v
 
-    # -------------------------------------------------------- table editors
-    def _table_tab(self, kind):
+    # ----------------------------------------------------------- table pages
+    def _table_page(self, kind):
         inner = QWidget()
         layout = QVBoxLayout(inner)
-        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setContentsMargins(4, 4, 12, 12)
         layout.setSpacing(12)
 
         desc = QLabel(tr('dict_desc') if kind == 'dictionary' else tr('snip_desc'))
@@ -222,6 +264,7 @@ class SettingsWindow(BaseWindow):
         table.setHorizontalHeaderLabels(headers)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         table.verticalHeader().setVisible(False)
+        table.setShowGrid(False)
         layout.addWidget(table, 1)
 
         entries = (text_processing.get_dictionary() if kind == 'dictionary'
@@ -237,7 +280,8 @@ class SettingsWindow(BaseWindow):
         add_btn.clicked.connect(lambda: self._table_add(table, '', ''))
         rm_btn = QPushButton(tr('remove'))
         rm_btn.setProperty('role', 'danger')
-        rm_btn.clicked.connect(lambda: table.removeRow(table.currentRow()) if table.currentRow() >= 0 else None)
+        rm_btn.clicked.connect(
+            lambda: table.removeRow(table.currentRow()) if table.currentRow() >= 0 else None)
         buttons.addWidget(add_btn)
         buttons.addWidget(rm_btn)
         buttons.addStretch(1)
@@ -264,11 +308,11 @@ class SettingsWindow(BaseWindow):
                 out.append({keys[0]: a, keys[1]: b})
         return out
 
-    # ---------------------------------------------------------- history/stats
-    def _history_tab(self):
+    # --------------------------------------------------------- history/stats
+    def _history_page(self):
         inner = QWidget()
         layout = QVBoxLayout(inner)
-        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setContentsMargins(4, 4, 12, 12)
         layout.setSpacing(12)
 
         self.history_list = QListWidget()
@@ -295,9 +339,11 @@ class SettingsWindow(BaseWindow):
             return
         for e in entries:
             when = time.strftime('%d/%m %H:%M', time.localtime(e['ts']))
-            app = (e.get('app') or '')[:28]
+            app = (e.get('app') or '')[:34]
             preview = ' '.join((e['text'] or '').split())
-            item = QListWidgetItem(f"[{when}] {app}\n{preview}")
+            if len(preview) > 120:
+                preview = preview[:117] + '…'
+            item = QListWidgetItem(f"{when}   {app}\n{preview}")
             item.setData(Qt.UserRole, e['text'])
             self.history_list.addItem(item)
 
@@ -310,27 +356,28 @@ class SettingsWindow(BaseWindow):
         history_mod.clear()
         self._reload_history()
 
-    def _stats_tab(self):
+    def _stats_page(self):
         inner = QWidget()
         layout = QVBoxLayout(inner)
-        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setContentsMargins(4, 4, 12, 12)
         layout.setSpacing(14)
 
         s = stats_mod.get_summary()
         cards = QGridLayout()
         cards.setSpacing(12)
         data = [
-            (tr('words_total'), s['total_words']),
-            (tr('words_today'), s['words_today']),
+            (tr('words_total'), f"{s['total_words']:,}".replace(',', '.')),
+            (tr('words_today'), f"{s['words_today']:,}".replace(',', '.')),
             (tr('avg_wpm'), s['avg_wpm']),
-            (tr('streak'), f"{s['streak']} 🔥"),
-            (tr('sessions'), s['sessions']),
+            (tr('streak'), s['streak']),
+            (tr('sessions'), f"{s['sessions']:,}".replace(',', '.')),
         ]
         for i, (title, value) in enumerate(data):
             card = QFrame()
             card.setProperty('role', 'card')
             v = QVBoxLayout(card)
             v.setContentsMargins(18, 16, 18, 16)
+            v.setSpacing(4)
             num = QLabel(str(value))
             num.setProperty('role', 'stat')
             cap = QLabel(title)
@@ -342,19 +389,19 @@ class SettingsWindow(BaseWindow):
         layout.addStretch(1)
         return inner
 
-    def _about_tab(self):
+    def _about_page(self):
         inner = QWidget()
         layout = QVBoxLayout(inner)
         layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(10)
+        layout.setSpacing(8)
         name = QLabel('WhisperEdge')
         name.setProperty('role', 'title')
         tagline = QLabel(tr('app_tagline'))
         tagline.setProperty('role', 'subtitle')
         info = QLabel(
-            'Ditado por voz local com faster-whisper.\n\n'
+            f'v{APP_VERSION} — ditado por voz local com faster-whisper.\n\n'
             'Baseado no projeto open-source WhisperWriter (savbell/whisper-writer).\n'
-            'Licenca: GNU GPL-3.0. Recursos de LLM/nuvem sao opcionais e desligaveis.'
+            'Licença: GNU GPL-3.0. Recursos de LLM/nuvem são opcionais e desligáveis.'
         )
         info.setWordWrap(True)
         info.setProperty('role', 'muted')
@@ -369,7 +416,7 @@ class SettingsWindow(BaseWindow):
     def save_settings(self):
         for (category, sub, key), widget in self.widgets.items():
             meta = self._meta_for(category, sub, key)
-            value = self._widget_value(widget, meta.get('type'), key)
+            value = self._widget_value(widget, meta.get('type'))
             if sub:
                 ConfigManager.set_config_value(value, category, sub, key)
             else:
@@ -384,7 +431,6 @@ class SettingsWindow(BaseWindow):
             pass
         ConfigManager.set_config_value(None, 'model_options', 'api', 'api_key')
 
-        # Dicionario e snippets (tabelas).
         try:
             text_processing.set_dictionary(self._read_table(self._dict_table, ('from', 'to')))
             text_processing.set_snippets(self._read_table(self._snip_table, ('trigger', 'expansion')))
@@ -402,8 +448,8 @@ class SettingsWindow(BaseWindow):
             return node.get(sub, {}).get(key, {})
         return node.get(key, {})
 
-    def _widget_value(self, widget, mtype, key):
-        if isinstance(widget, QCheckBox):
+    def _widget_value(self, widget, mtype):
+        if isinstance(widget, QCheckBox):  # inclui Switch
             return widget.isChecked()
         if isinstance(widget, QComboBox):
             return widget.currentText() or None
@@ -437,7 +483,7 @@ class SettingsWindow(BaseWindow):
                 widget.setText('' if value is None else str(value))
 
     def closeEvent(self, event):
-        ConfigManager.reload_config()  # descarta alteracoes nao salvas
+        ConfigManager.reload_config()  # descarta alterações não salvas
         self.settings_closed.emit()
         super().closeEvent(event)
 

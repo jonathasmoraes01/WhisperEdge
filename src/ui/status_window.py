@@ -118,9 +118,9 @@ class StatusWindow(QWidget):
         cl = QHBoxLayout(self.controls)
         cl.setContentsMargins(0, 0, 0, 0)
         cl.setSpacing(6)
-        self.btn_record = self._icon_button('●', tr('status_recording'), self.recordClicked)
-        self.btn_settings = self._icon_button('⚙', tr('settings'), self.settingsClicked)
-        self.btn_expand = self._icon_button('⤢', tr('open_main'), self.expandClicked)
+        self.btn_record = self._icon_button('record', tr('status_recording'), self.recordClicked)
+        self.btn_settings = self._icon_button('settings', tr('settings'), self.settingsClicked)
+        self.btn_expand = self._icon_button('expand', tr('open_main'), self.expandClicked)
         cl.addWidget(self.btn_record)
         cl.addWidget(self.btn_settings)
         cl.addWidget(self.btn_expand)
@@ -132,18 +132,20 @@ class StatusWindow(QWidget):
         self._apply_colors()
         self._relayout()
 
-    def _icon_button(self, glyph, tip, signal):
+    def _icon_button(self, kind, tip, signal):
+        """Botao redondo com icone desenhado em codigo (ui.widgets.icon)."""
+        from ui.widgets import icon
         b = QToolButton()
-        b.setText(glyph)
+        b.setIcon(icon(kind, 14))
         b.setToolTip(tip)
         b.setCursor(Qt.PointingHandCursor)
         b.setFixedSize(26, 26)
         b.clicked.connect(signal.emit)
         pal = get_palette()
         b.setStyleSheet(
-            f"QToolButton {{ background: {pal.get('PANEL2', '#282833')}; color: {pal.get('TEXT', '#e9e9f1')};"
-            f" border: none; border-radius: 13px; font-size: 12px; }}"
-            f"QToolButton:hover {{ background: {pal.get('ACCENT', '#6C5CE7')}; color: white; }}"
+            f"QToolButton {{ background: {pal.get('PANEL2', '#20202a')};"
+            f" border: none; border-radius: 13px; }}"
+            f"QToolButton:hover {{ background: {pal.get('ACCENT', '#6C5CE7')}; }}"
         )
         return b
 

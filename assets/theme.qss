@@ -1,4 +1,4 @@
-/* WiprFlow — folha de estilo central (placeholders @VAR@ substituidos em theme.py) */
+/* WhisperEdge — folha de estilo central (placeholders @VAR@ substituidos em theme.py) */
 
 QWidget {
     background-color: @BG@;
@@ -8,16 +8,44 @@ QWidget {
 }
 
 QLabel { background: transparent; }
-QLabel[role="title"]    { font-size: 20px; font-weight: 700; color: @TEXT@; }
-QLabel[role="subtitle"] { font-size: 13px; color: @MUTED@; }
-QLabel[role="muted"]    { color: @MUTED@; }
-QLabel[role="stat"]     { font-size: 26px; font-weight: 700; color: @ACCENT@; }
+QLabel[role="title"]     { font-size: 19px; font-weight: 700; }
+QLabel[role="subtitle"]  { font-size: 12px; color: @MUTED@; }
+QLabel[role="muted"]     { color: @MUTED@; }
+QLabel[role="stat"]      { font-size: 28px; font-weight: 700; color: @ACCENT@; }
+QLabel[role="fieldname"] { font-size: 13px; font-weight: 600; }
+QLabel[role="fielddesc"] { font-size: 11px; color: @MUTED@; }
+QLabel[role="section"]   {
+    font-size: 11px; font-weight: 700; color: @MUTED@;
+    letter-spacing: 1px; text-transform: uppercase;
+}
+QLabel[role="kbd"] {
+    background: @PANEL2@;
+    border: 1px solid @BORDER@;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-family: "Consolas", monospace;
+    font-size: 12px;
+    color: @TEXT@;
+}
 
-/* Cartoes / painéis */
+QToolTip {
+    background-color: @PANEL2@;
+    color: @TEXT@;
+    border: 1px solid @BORDER@;
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+
+/* Cartoes */
 QFrame[role="card"] {
     background-color: @PANEL@;
     border: 1px solid @BORDER@;
-    border-radius: 14px;
+    border-radius: 12px;
+}
+QFrame[role="hline"] {
+    background: @BORDER@;
+    max-height: 1px;
+    border: none;
 }
 
 /* Campos de entrada */
@@ -25,58 +53,52 @@ QLineEdit, QComboBox, QSpinBox, QPlainTextEdit, QTextEdit {
     background-color: @PANEL2@;
     border: 1px solid @BORDER@;
     border-radius: 8px;
-    padding: 6px 10px;
+    padding: 7px 10px;
     color: @TEXT@;
     selection-background-color: @ACCENT@;
 }
 QLineEdit:focus, QComboBox:focus, QSpinBox:focus,
-QPlainTextEdit:focus, QTextEdit:focus {
-    border: 1px solid @ACCENT@;
-}
-QComboBox::drop-down { border: none; width: 22px; }
+QPlainTextEdit:focus, QTextEdit:focus { border: 1px solid @ACCENT@; }
+QLineEdit:hover, QComboBox:hover, QSpinBox:hover { border: 1px solid @MUTED@; }
+QLineEdit[echoMode="2"] { letter-spacing: 2px; }
+
+QComboBox::drop-down { border: none; width: 26px; }
+QComboBox::down-arrow { image: none; width: 0; height: 0; }
 QComboBox QAbstractItemView {
     background-color: @PANEL2@;
     border: 1px solid @BORDER@;
+    border-radius: 8px;
     selection-background-color: @ACCENT@;
+    selection-color: #ffffff;
     outline: none;
+    padding: 4px;
 }
+QSpinBox::up-button, QSpinBox::down-button { width: 18px; border: none; background: transparent; }
 
 /* Botoes */
 QPushButton {
     background-color: @PANEL2@;
     border: 1px solid @BORDER@;
-    border-radius: 9px;
-    padding: 8px 16px;
+    border-radius: 8px;
+    padding: 8px 18px;
     color: @TEXT@;
     font-weight: 600;
 }
-QPushButton:hover { border: 1px solid @ACCENT@; }
+QPushButton:hover { border: 1px solid @ACCENT@; color: @TEXT@; }
 QPushButton:pressed { background-color: @PANEL@; }
+QPushButton:disabled { color: @MUTED@; }
 QPushButton[role="primary"] {
     background-color: @ACCENT@;
     border: 1px solid @ACCENT@;
     color: #ffffff;
 }
 QPushButton[role="primary"]:hover { background-color: @ACCENT_HOVER@; border-color: @ACCENT_HOVER@; }
-QPushButton[role="danger"] { color: #ff6b6b; }
+QPushButton[role="danger"] { color: #ff7676; }
+QPushButton[role="danger"]:hover { border-color: #ff7676; }
 QPushButton[role="ghost"] { background: transparent; border: none; color: @MUTED@; }
 QPushButton[role="ghost"]:hover { color: @TEXT@; }
 
-/* Abas */
-QTabWidget::pane { border: none; top: -1px; }
-QTabBar::tab {
-    background: transparent;
-    color: @MUTED@;
-    padding: 9px 16px;
-    margin-right: 4px;
-    border: none;
-    border-radius: 9px;
-    font-weight: 600;
-}
-QTabBar::tab:selected { background: @PANEL@; color: @TEXT@; }
-QTabBar::tab:hover:!selected { color: @TEXT@; }
-
-/* Checkbox */
+/* Checkbox (fallback; a UI usa o Switch custom) */
 QCheckBox { spacing: 8px; background: transparent; }
 QCheckBox::indicator {
     width: 18px; height: 18px;
@@ -88,11 +110,14 @@ QCheckBox::indicator:checked { background: @ACCENT@; border-color: @ACCENT@; }
 
 /* Scroll */
 QScrollArea { border: none; background: transparent; }
-QScrollBar:vertical { background: transparent; width: 10px; margin: 2px; }
-QScrollBar::handle:vertical { background: @BORDER@; border-radius: 5px; min-height: 30px; }
+QScrollArea > QWidget > QWidget { background: transparent; }
+QScrollBar:vertical { background: transparent; width: 8px; margin: 2px; }
+QScrollBar::handle:vertical { background: @BORDER@; border-radius: 4px; min-height: 30px; }
 QScrollBar::handle:vertical:hover { background: @MUTED@; }
 QScrollBar::add-line, QScrollBar::sub-line { height: 0; }
 QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
+QScrollBar:horizontal { height: 8px; background: transparent; }
+QScrollBar::handle:horizontal { background: @BORDER@; border-radius: 4px; }
 
 /* Listas / tabelas */
 QListWidget, QTableWidget {
@@ -101,24 +126,37 @@ QListWidget, QTableWidget {
     border-radius: 10px;
     outline: none;
 }
-QListWidget::item { padding: 8px; border-radius: 6px; }
-QListWidget::item:selected { background: @ACCENT@; color: #fff; }
+QListWidget::item { padding: 10px; border-radius: 8px; margin: 2px 4px; }
+QListWidget::item:selected { background: @PANEL2@; color: @TEXT@; }
+QListWidget::item:hover:!selected { background: @PANEL2@; }
+QTableWidget { gridline-color: @BORDER@; }
+QTableWidget::item { padding: 6px; }
+QTableWidget::item:selected { background: @ACCENT@; color: #ffffff; }
 QHeaderView::section {
-    background: @PANEL2@; color: @MUTED@; border: none; padding: 6px;
+    background: transparent; color: @MUTED@; border: none;
+    border-bottom: 1px solid @BORDER@; padding: 8px 6px;
+    font-weight: 600; font-size: 12px;
 }
+QTableCornerButton::section { background: transparent; border: none; }
 
-/* Navegacao lateral das Configuracoes (estilo sidebar limpo) */
+/* Navegacao lateral das Configuracoes */
 QListWidget#nav {
     background: transparent;
     border: none;
     outline: none;
     font-size: 13px;
+    font-weight: 600;
 }
 QListWidget#nav::item {
-    padding: 10px 12px;
-    border-radius: 9px;
+    padding: 10px 14px;
+    border-radius: 8px;
     color: @MUTED@;
-    margin: 1px 0;
+    margin: 1px 4px;
+    border-left: 3px solid transparent;
 }
-QListWidget#nav::item:selected { background: @PANEL@; color: @TEXT@; }
-QListWidget#nav::item:hover:!selected { color: @TEXT@; }
+QListWidget#nav::item:selected {
+    background: @PANEL@;
+    color: @TEXT@;
+    border-left: 3px solid @ACCENT@;
+}
+QListWidget#nav::item:hover:!selected { color: @TEXT@; background: transparent; }

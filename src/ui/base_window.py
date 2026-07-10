@@ -113,15 +113,15 @@ class BaseWindow(QMainWindow):
         self.is_dragging = False
 
     def paintEvent(self, event):
-        """
-        Create a rounded rectangle with a semi-transparent white background.
-        """
+        """Painel arredondado escuro com borda sutil de definicao."""
+        from PyQt5.QtGui import QPen
+        pal = get_palette()
         path = QPainterPath()
-        path.addRoundedRect(QRectF(self.rect()), 20, 20)
+        path.addRoundedRect(QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5), 16, 16)
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        _bg = QColor(get_palette().get('PANEL', '#1e1e27'))
-        _bg.setAlpha(240)
+        _bg = QColor(pal.get('BG', '#0f0f13'))
+        _bg.setAlpha(247)
         painter.setBrush(QBrush(_bg))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(QPen(QColor(pal.get('BORDER', '#2a2a36')), 1))
         painter.drawPath(path)

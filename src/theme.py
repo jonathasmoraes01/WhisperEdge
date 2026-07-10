@@ -20,19 +20,19 @@ def _lighten(hex_color, amount=30):
 
 
 DARK = {
-    'BG': '#141419',
-    'PANEL': '#1e1e27',
-    'PANEL2': '#282833',
-    'TEXT': '#e9e9f1',
-    'MUTED': '#9a9ab2',
-    'BORDER': '#33333f',
+    'BG': '#0f0f13',        # fundo geral (bem escuro)
+    'PANEL': '#17171d',     # cards / sidebar selecionada
+    'PANEL2': '#20202a',    # inputs / chips
+    'TEXT': '#ececf4',
+    'MUTED': '#8b8ba0',
+    'BORDER': '#2a2a36',
 }
 
 LIGHT = {
-    'BG': '#f3f3f7',
+    'BG': '#f4f4f8',
     'PANEL': '#ffffff',
-    'PANEL2': '#eceef4',
-    'TEXT': '#1b1b26',
+    'PANEL2': '#ebecf2',
+    'TEXT': '#191922',
     'MUTED': '#6b6b7c',
     'BORDER': '#dcdce6',
 }
