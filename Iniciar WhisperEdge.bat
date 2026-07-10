@@ -1,15 +1,15 @@
 @echo off
-title WhisperWriter
+title WhisperEdge
 cd /d "%~dp0"
 echo ============================================
-echo   WhisperWriter - ditado por voz (Whisper)
+echo   WhisperEdge - ditado por voz (Whisper local)
 echo ============================================
 echo.
-echo Atalho para ditar:  Ctrl + Shift + Espaco
+echo Atalho de ditado (padrao): Ctrl + Espaco
 echo (Na primeira vez, aguarde o download do modelo.)
 echo Para fechar: feche esta janela ou o icone da bandeja.
 echo.
 ".venv\Scripts\python.exe" run.py
 echo.
-echo WhisperWriter encerrou. Pressione uma tecla para fechar.
+echo WhisperEdge encerrou. Pressione uma tecla para fechar.
 pause >nul

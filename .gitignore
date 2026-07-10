@@ -130,3 +130,8 @@ dmypy.json
 
 # Configuration files
 config.yamldata/
+src/config.yaml
+
+# WhisperEdge — locais
+_*.png
+*.log

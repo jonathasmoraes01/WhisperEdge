@@ -58,8 +58,8 @@ Na primeira execução, o modelo de transcrição é baixado (uma vez) e fica em
 - O app já vem com a correção do **segfault** de inicialização (o `ctranslate2`
   é importado antes do PyQt5 em `src/main.py`) e roda oculto sem console.
 - Para iniciar **sem janela de console** ou **junto com o Windows**, use um
-  atalho apontando para `pythonw`/wscript (veja `Iniciar WhisperWriter.bat` e o
-  lançador `.vbs` de exemplo no repositório).
+  atalho apontando para `pythonw`/wscript (veja `Iniciar WhisperEdge.bat` e o
+  launcher `WhisperEdge.vbs` (oculto) no repositório).
 
 ---
 
