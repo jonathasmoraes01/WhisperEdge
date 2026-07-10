@@ -1,142 +1,157 @@
-# <img src="./assets/ww-logo.png" alt="WhisperEdge" width="26" height="26"> WhisperEdge
+<div align="center">
 
-**Ditado por voz fluido, local e privado.** WhisperEdge escuta um atalho global,
-transcreve sua fala com [faster-whisper](https://github.com/SYSTRAN/faster-whisper)
-rodando **no seu computador** e digita o texto onde estiver o cursor — em qualquer
-aplicativo. Inspirado no Wispr Flow, com uma pílula flutuante e waveform animada,
-tema escuro e recursos de produtividade — **sem depender de nuvem**.
+<img src="assets/ww-logo.png" alt="WhisperEdge" width="96" height="96">
 
-> WhisperEdge é um rebrand/evolução do excelente projeto open-source
-> [WhisperWriter](https://github.com/savbell/whisper-writer) (GPL-3.0).
+# WhisperEdge
+
+**Ditado por voz local, privado e fluido para Windows.**
+
+Fale em qualquer aplicativo — o texto aparece onde estiver o cursor.
+Transcrição 100% no seu computador, sem nuvem.
+
+[![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6?logo=windows&logoColor=white)](#-instalação)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](#-instalação)
+[![Licença](https://img.shields.io/badge/Licen%C3%A7a-GPL--3.0-blue)](LICENSE)
+[![Offline](https://img.shields.io/badge/Transcri%C3%A7%C3%A3o-100%25%20local-6C5CE7)](#-privacidade)
+
+[Instalação](#-instalação) •
+[Como usar](#-como-usar) •
+[Recursos](#-recursos) •
+[Configuração](#%EF%B8%8F-configuração) •
+[English](README.en.md)
+
+<img src="docs/screenshots/settings-general.png" alt="Configurações do WhisperEdge" width="720">
+
+</div>
 
 ---
+
+## O que é
+
+O WhisperEdge fica invisível na bandeja do sistema escutando um atalho global
+(padrão `Ctrl + Espaço`). Você pressiona, fala, pausa — e o que você disse é
+**digitado automaticamente** no campo em que você estava, seja no navegador,
+no editor de código, no chat ou no e-mail. A transcrição roda **localmente**
+com [faster-whisper](https://github.com/SYSTRAN/faster-whisper): seu áudio
+nunca sai da sua máquina.
+
+Um indicador flutuante minimalista mostra o estado do app:
+
+| Ocioso | Hover (controles) | Gravando |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/indicator-idle.png" alt="ocioso"> | <img src="docs/screenshots/indicator-hover.png" alt="controles"> | <img src="docs/screenshots/indicator-recording.png" alt="gravando"> |
+
+A bolinha é **arrastável** (lembra a posição) e a waveform **reage à sua voz
+de verdade** — parada no silêncio, viva quando você fala.
 
 ## ✨ Recursos
 
-- 🎙️ **Ditado local** com faster-whisper (offline, privado). 4 modos de gravação:
-  `continuous`, `voice_activity_detection`, `press_to_toggle`, `hold_to_record`.
-- 🌊 **Indicador flutuante persistente** — uma pílula pequena e discreta mostra
-  que o app está aberto; ao passar o mouse, expande com mini-controles
-  (gravar / configurações / janela). A **waveform reage à sua voz de verdade**:
-  parada no silêncio, animada quando você fala. Não rouba o foco.
-- 📋 **Fallback de clipboard** — cada transcrição também vai para a área de
-  transferência, para colar mesmo se nenhum campo estava focado.
-- 🎨 **Tema escuro** central (QSS), cor de destaque configurável e
-  **Configurações com sidebar** limpa (navegação lateral por ícones).
-- 🌐 **Bilíngue (EN/PT)** — interface em inglês ou português (auto pelo sistema).
-- 🧹 **Limpeza por IA (opcional)** — envia a transcrição a um LLM para corrigir
-  pontuação e remover hesitações ("um", "tipo", "né"). Provedores: OpenAI-compat,
-  **Ollama local**, ou Anthropic. Prompt de sistema editável. **Desligável.**
-- ⌨️ **Command Mode** — uma segunda hotkey trata sua fala como uma **instrução**
-  sobre o texto selecionado/clipboard (ex.: "deixe mais formal", "vire em bullets",
-  "resuma"). Requer um LLM configurado.
-- 📖 **Dicionário pessoal** — força correções de nomes/jargões na saída.
-- ⚡ **Snippets por voz** — gatilhos falados que expandem em textos maiores
-  (ex.: "meu email" → seu endereço completo).
-- 🕘 **Histórico de dictados** — cada transcrição salva localmente (SQLite) com
-  horário e app ativo; navegável e copiável na UI.
-- 📊 **Estatísticas** — palavras ditadas, velocidade média (WPM) e streak diário.
-
-Tudo que é IA/nuvem é **opcional e desligável**; nada de chaves de API no código.
-
----
+- 🎙️ **Ditado local e offline** — modelos Whisper de `tiny` a `large-v3`;
+  4 modos de gravação (parada por silêncio, contínuo, apertar p/ alternar,
+  segurar p/ gravar).
+- 🌊 **Indicador flutuante** com waveform reativa, que nunca rouba o foco da
+  janela onde você digita.
+- 📋 **Sempre no clipboard** — cada transcrição também fica pronta para colar
+  (`Ctrl+V`), mesmo se nenhum campo estava focado.
+- 🧹 **Limpeza por IA** *(opcional)* — um LLM corrige pontuação e remove
+  hesitações ("ééé", "tipo"). Funciona com OpenAI, qualquer endpoint
+  compatível ou **Ollama local**. Totalmente desligável.
+- 🎯 **Perfis por app** — o tom se adapta ao aplicativo ativo: casual no
+  Discord/WhatsApp, prompt técnico bem estruturado em IDEs, formal no e-mail.
+- ⌨️ **Command Mode** — segunda hotkey: fale uma **instrução** sobre o texto
+  selecionado ("resuma isto", "deixe mais formal") e ele é reescrito.
+- 📖 **Dicionário pessoal** — força a grafia certa de nomes e jargões.
+- ⚡ **Snippets por voz** — "meu email" → `voce@dominio.com`.
+- 🕘 **Histórico local** (SQLite) com app de origem, e 📊 **estatísticas**
+  (palavras, velocidade WPM, sequência diária).
+- 🌐 **Interface em português e inglês**, tema escuro com cor de destaque
+  configurável, e configurações aplicadas **sem reiniciar**.
 
 ## 🚀 Instalação
 
-Pré-requisitos: **Python 3.11** (recomendado) e um microfone.
+**Pré-requisitos:** Windows 10/11, [Python 3.11](https://www.python.org/downloads/)
+(marque *"Add python.exe to PATH"* na instalação) e um microfone.
+
+### Opção A — instalador automático
+
+1. Baixe o projeto ([ZIP da última versão](../../releases/latest) ou `git clone`).
+2. Dê dois cliques em **`install.bat`**.
+3. Pronto — o instalador cria o ambiente, baixa as dependências, cria os
+   atalhos e abre o app.
+
+### Opção B — manual
 
 ```bash
-git clone <este-repo> whisper-edge
-cd whisper-edge
-python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# Linux/macOS:
-# source .venv/bin/activate
-pip install -r requirements.txt
-python run.py
+git clone https://github.com/jonathasmoraes01/WhisperEdge.git
+cd WhisperEdge
+python -m venv --copies .venv
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\python run.py
 ```
 
-Na primeira execução, o modelo de transcrição é baixado (uma vez) e fica em cache.
+> Na primeira execução, o modelo de transcrição (~460 MB no padrão `small`) é
+> baixado uma única vez e fica em cache.
 
-### Windows — notas
-- O app já vem com a correção do **segfault** de inicialização (o `ctranslate2`
-  é importado antes do PyQt5 em `src/main.py`) e roda oculto sem console.
-- Para iniciar **sem janela de console** ou **junto com o Windows**, use um
-  atalho apontando para `pythonw`/wscript (veja `Iniciar WhisperEdge.bat` e o
-  launcher `WhisperEdge.vbs` (oculto) no repositório).
+Para abrir **sem nenhuma janela**, use `WhisperEdge.vbs`. Para iniciar junto
+com o Windows, coloque um atalho desse arquivo na pasta Inicializar
+(`Win+R` → `shell:startup`).
 
----
+## 🎧 Como usar
 
-## 🎧 Uso
+1. Abra o WhisperEdge — a bolinha aparece na parte inferior da tela e o ícone
+   na bandeja.
+2. Clique no campo onde quer escrever.
+3. Pressione **`Ctrl + Espaço`**, fale e faça uma pausa.
+4. O texto é digitado no lugar (e copiado para o clipboard).
 
-1. Rode `python run.py`. O ícone aparece na **bandeja** e a escuta começa
-   automaticamente.
-2. Posicione o cursor onde quer escrever, pressione o **atalho de ditado**
-   (padrão `ctrl+shift+space`), fale e faça uma pausa — o texto é digitado.
-3. Abra **Configurações** pelo ícone da bandeja para ajustar tudo.
-
-### Command Mode
-Selecione um texto, pressione o **atalho de comando** (padrão `ctrl+alt+space`),
-e fale uma instrução (ex.: "resuma isto"). O texto selecionado é substituído pelo
-resultado. Requer `llm_post_processing` configurado.
-
-> Dica: escolha um atalho de comando que **não seja um superset** do atalho de
-> ditado, para evitar disparar os dois juntos.
-
----
+Passe o mouse na bolinha para acessar **gravar / configurações / janela**.
+Tudo é configurável pelo ícone de engrenagem.
 
 ## ⚙️ Configuração
 
-As opções ficam em `src/config.yaml` (geradas do `src/config_schema.yaml`) e são
-editáveis pela UI de **Configurações**. Principais seções novas do WhisperEdge:
+Tudo editável pela interface (bandeja → Configurações). Principais opções:
 
-| Seção | Chaves | O que faz |
-|------|--------|-----------|
-| `ui` | `language` (auto/en/pt), `theme` (dark/light), `accent_color` | Aparência e idioma. |
-| `llm_post_processing` | `enabled`, `provider` (openai/ollama/anthropic), `base_url`, `model`, `api_key`, `timeout`, `system_prompt` | Limpeza opcional por LLM. |
-| `command_mode` | `enabled`, `activation_key`, `source` (selection/clipboard), `system_prompt` | Segunda hotkey de comando. |
-| `dictionary` | `enabled` | Correções (dados em `data/dictionary.json`, editáveis na UI). |
-| `snippets` | `enabled` | Expansões (dados em `data/snippets.json`). |
-| `history` | `enabled`, `max_entries` | Histórico local (`data/history.db`). |
-| `stats` | `enabled` | Estatísticas (`data/stats.json`). |
+| Seção | O que controla |
+|---|---|
+| **Geral** | Idioma da interface, tema, cor de destaque, som de conclusão |
+| **Gravação** | Atalho, modo de gravação, microfone, sensibilidade de silêncio |
+| **Modelo** | Modelo Whisper (`tiny`→`large-v3`), CPU/GPU, idioma falado |
+| **Aprimorar** | Limpeza por IA (provedor/modelo/prompt), Command Mode |
+| **Dicionário / Snippets / Perfis** | Correções, expansões e tom por app |
+| **Histórico / Estatísticas** | Seus dictados e números de uso |
 
-As seções originais (`model_options`, `recording_options`, `post_processing`,
-`misc`) continuam válidas.
+Os arquivos ficam em `src/config.yaml` (configurações) e `data/` (seus dados
+locais) — nenhum dos dois é versionado.
 
-### Chaves de API / privacidade
-- A chave da OpenAI vai para o `.env` (`OPENAI_API_KEY`), **nunca** para o config.
-- Para Ollama local: `provider: ollama`, `base_url: http://localhost:11434/v1`.
-- Sem LLM configurado, o clean-up e o Command Mode simplesmente devolvem o texto
-  original — o ditado local continua funcionando 100% offline.
+## 🔒 Privacidade
 
-### Idiomas (i18n)
-A interface tem strings em inglês e português em `src/i18n.py`. `ui.language: auto`
-segue o idioma do sistema; force com `en` ou `pt`.
+- A transcrição é **100% local** — o áudio nunca sai da sua máquina.
+- Histórico, estatísticas, dicionário e perfis ficam apenas em `data/`.
+- Os recursos de IA (limpeza e Command Mode) são **opcionais e desligados por
+  padrão**; ao ativá-los com um provedor de nuvem, apenas o **texto** ditado é
+  enviado ao provedor escolhido. Com **Ollama**, até isso fica local.
+- Chaves de API são guardadas no `.env`, nunca no código ou na configuração.
 
----
+## 🗺️ Roadmap
 
-## 🗂️ Estrutura
+- [ ] Instalador `.exe` (sem precisar de Python)
+- [ ] Suporte a GPU NVIDIA out-of-the-box (CUDA)
+- [ ] Mais idiomas de interface
+- [ ] Modo de pontuação por comando de voz ("vírgula", "nova linha")
 
-```
-src/
-  main.py            app, bandeja, hotkeys, orquestracao
-  transcription.py   faster-whisper + pipeline de aprimoramento
-  result_thread.py   gravacao de audio + VAD
-  key_listener.py    hotkeys (ditado + command mode)
-  text_processing.py dicionario + snippets
-  llm_cleanup.py     LLM opcional (clean-up / chat)
-  command_processor.py  Command Mode
-  history.py, stats.py  persistencia local
-  i18n.py, theme.py, paths.py  fundacao (idioma/tema/caminhos)
-  ui/  base_window, main_window, settings_window, status_window (pilula+waveform)
-assets/  theme.qss, ww-logo.png/.ico, sons e icones
-```
+## 🤝 Contribuindo
 
----
+Issues e PRs são bem-vindos! O código é Python (PyQt5) direto ao ponto:
+`src/main.py` orquestra, `src/ui/` é a interface, `src/transcription.py` é o
+pipeline de voz. Rode `python run.py` e edite com hot-apply de configurações.
 
-## 📜 Licença e créditos
+## 📜 Créditos e licença
 
-GNU **GPL-3.0** (preservada do projeto original). WhisperEdge é baseado em
-[WhisperWriter](https://github.com/savbell/whisper-writer) de sav (savbell) e
-contribuidores. Veja `LICENSE`.
+O WhisperEdge é uma evolução do excelente
+[**WhisperWriter**](https://github.com/savbell/whisper-writer) de
+[sav](https://github.com/savbell) e contribuidores — obrigado! ❤️
+
+Transcrição por [faster-whisper](https://github.com/SYSTRAN/faster-whisper) /
+[CTranslate2](https://github.com/OpenNMT/CTranslate2).
+
+Licenciado sob **GNU GPL-3.0** — veja [LICENSE](LICENSE).

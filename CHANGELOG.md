@@ -4,66 +4,46 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [WhisperEdge 1.1] - 2026-07-10
-### UI overhaul
-- Redesign completo do front-end, **sem emojis**: rótulos e descrições amigáveis
-  PT/EN para todas as configurações (`i18n.FIELD_META`), toggles estilo switch,
-  cards por seção com divisórias, sidebar com barra de destaque no item ativo,
-  ícones desenhados em código (`ui/widgets.py`), janela principal com marca e
-  chip de atalho, paleta mais profunda e QSS refinado.
+## [0.1.0] - 2026-07-10
+
+Primeira versão pública do **WhisperEdge** — ditado por voz local e privado,
+evolução do projeto open-source WhisperWriter (GPL-3.0, créditos preservados).
+
+### Added
+- **Indicador flutuante**: bolinha discreta e arrastável que mostra o app aberto;
+  expande no hover com controles (gravar / configurações / janela); **waveform
+  reativa à voz real** (parada no silêncio, viva quando você fala); não rouba o
+  foco da janela-alvo.
+- **Tema escuro central** (`assets/theme.qss` + `src/theme.py`) com cor de
+  destaque configurável; ícones desenhados em código (`src/ui/widgets.py`).
+- **Configurações redesenhadas**: sidebar de navegação, linhas com título +
+  descrição amigáveis (PT/EN), toggles estilo switch, cards por seção.
+- **i18n EN/PT** (`src/i18n.py`, `ui.language: auto|en|pt`).
+- **Limpeza por IA opcional** (`src/llm_cleanup.py`): OpenAI-compat, Ollama
+  local ou Anthropic; prompt editável; fallback seguro; 100% desligável.
+- **Command Mode**: segunda hotkey — a fala vira instrução sobre a seleção ou
+  o clipboard, processada por LLM.
+- **Perfis por app** (`data/app_profiles.json` + página própria): adapta o tom
+  pelo app ativo (chat casual, prompt técnico em IDEs, e-mail formal).
+- **Dicionário pessoal** e **Snippets por voz** com editores em tabela.
+- **Histórico persistente** (SQLite) com app de origem, e **Estatísticas**
+  (palavras, WPM, streak diário).
+- **Fallback de clipboard**: cada transcrição fica pronta para colar.
+- **Aplicação a quente das configurações** (sem reiniciar; modelo recarrega em
+  segundo plano só se necessário) e **som de conclusão suave**.
+- Launchers Windows: `WhisperEdge.vbs` (invisível, via `pythonw`) e
+  `Iniciar WhisperEdge.bat` (com console, para depuração).
 
 ### Fixed
-- Atalho disparava com Ctrl+QUALQUER tecla: o backend pynput mapeava teclas
-  desconhecidas para `SPACE` por padrão; agora eventos fora do mapa são ignorados.
-
-### Added
-- **Indicador flutuante persistente**: pílula discreta que mostra o app aberto e
-  **expande no hover** com mini-controles (gravar / configurações / janela).
-- **Waveform reativa à voz real**: o `ResultThread` emite o nível de áudio (RMS)
-  e a waveform fica parada no silêncio e se mexe quando você fala.
-- **Fallback de clipboard** (`post_processing.copy_to_clipboard`): cada
-  transcrição também vai para a área de transferência.
-- **Configurações com sidebar** de navegação (estilo SuperWhisper), no lugar das
-  abas no topo.
-
-### Changed
-- Produto renomeado de WiprFlow para **WhisperEdge**.
-- Launchers portáveis `Iniciar WhisperEdge.bat` e `WhisperEdge.vbs`.
-- Higiene do repositório: `config.yaml`/`data/` fora do versionamento; `.env`
-  garantidamente ignorado.
-
-## [WhisperEdge 1.0] - 2026-07-10
-Rebrand e evolução do WhisperWriter para **WhisperEdge** — ditado por voz local,
-inspirado no Wispr Flow, mantendo a licença GPL-3.0 e os créditos originais.
-
-### Added
-- **Pílula flutuante com waveform animada** (`src/ui/status_window.py`) que não
-  rouba o foco da janela-alvo; estados ocioso/gravando/transcrevendo.
-- **Tema escuro central** via `assets/theme.qss` + `src/theme.py` (cor de destaque
-  configurável) aplicado a toda a UI.
-- **i18n EN/PT** (`src/i18n.py`, config `ui.language`).
-- **Limpeza por LLM opcional** (`src/llm_cleanup.py`): OpenAI-compat, Ollama local
-  ou Anthropic, com prompt de sistema editável e fallback seguro. Desligável.
-- **Command Mode** (`src/command_processor.py` + segunda hotkey no `key_listener`):
-  a fala vira instrução sobre a seleção/clipboard, processada por LLM.
-- **Dicionário pessoal** e **Snippets por voz** (`src/text_processing.py`), com
-  editores em tabela nas Configurações.
-- **Histórico de dictados** persistente em SQLite (`src/history.py`) e
-  **Estatísticas** de uso — palavras, WPM, streak (`src/stats.py`) — com telas na UI.
-- **Configurações redesenhadas** com abas (Geral, Gravação, Modelo, Aprimorar,
-  Dicionário, Snippets, Histórico, Estatísticas, Sobre).
-- Novo **logo original** (`assets/ww-logo.png/.ico`).
-- Correções de execução no Windows: `import ctranslate2` antes do PyQt5 (evita
-  segfault), guarda de `sys.stdout` None (rodar oculto), auto-listen na bandeja.
-
-### Changed
-- Rebrand de todas as strings de usuário e da classe principal (`WhisperEdgeApp`).
-- `requirements.txt` reescrito (UTF-8) para o conjunto testado em Python 3.11.
-- `transcribe()` agora aplica o pipeline de aprimoramento (LLM → dicionário →
-  snippets) antes da formatação final.
+- Atalho disparava com Ctrl+QUALQUER tecla (teclas desconhecidas eram tratadas
+  como ESPAÇO no backend pynput).
+- Nenhuma janela de console pisca na barra de tarefas ao abrir (venv com
+  executáveis reais + `pythonw` + execução em processo único).
+- Segfault na inicialização no Windows (`import ctranslate2` antes do PyQt5).
 
 ### Preserved
-- Os 4 modos de gravação e o pipeline faster-whisper/API originais.
+- Os 4 modos de gravação (continuous, VAD, press-to-toggle, hold-to-record) e o
+  pipeline faster-whisper/API do WhisperWriter original.
 - Licença GPL-3.0 e créditos ao projeto WhisperWriter.
 
 ## [Unreleased]
