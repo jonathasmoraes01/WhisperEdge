@@ -4,8 +4,8 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [WiprFlow 1.0] - 2026-07-10
-Rebrand e evolução do WhisperWriter para **WiprFlow** — ditado por voz local,
+## [WhisperEdge 1.0] - 2026-07-10
+Rebrand e evolução do WhisperWriter para **WhisperEdge** — ditado por voz local,
 inspirado no Wispr Flow, mantendo a licença GPL-3.0 e os créditos originais.
 
 ### Added
@@ -29,7 +29,7 @@ inspirado no Wispr Flow, mantendo a licença GPL-3.0 e os créditos originais.
   segfault), guarda de `sys.stdout` None (rodar oculto), auto-listen na bandeja.
 
 ### Changed
-- Rebrand de todas as strings de usuário e da classe principal (`WiprFlowApp`).
+- Rebrand de todas as strings de usuário e da classe principal (`WhisperEdgeApp`).
 - `requirements.txt` reescrito (UTF-8) para o conjunto testado em Python 3.11.
 - `transcribe()` agora aplica o pipeline de aprimoramento (LLM → dicionário →
   snippets) antes da formatação final.

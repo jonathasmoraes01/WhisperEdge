@@ -37,7 +37,7 @@ class ResultThread(QThread):
         Initialize the ResultThread.
 
         :param local_model: Local transcription model (if applicable)
-        :param force_vad: WiprFlow — forca parada automatica por silencio (VAD),
+        :param force_vad: WhisperEdge — forca parada automatica por silencio (VAD),
                           independente do recording_mode. Usado pelo Command Mode.
         """
         super().__init__()
@@ -45,7 +45,7 @@ class ResultThread(QThread):
         self.is_recording = False
         self.is_running = True
         self.sample_rate = None
-        self.speech_duration = 0.0  # WiprFlow: duracao da fala (segundos) p/ WPM
+        self.speech_duration = 0.0  # WhisperEdge: duracao da fala (segundos) p/ WPM
         self.force_vad = force_vad
         self.mutex = QMutex()
 
@@ -177,7 +177,7 @@ class ResultThread(QThread):
 
         audio_data = np.array(recording, dtype=np.int16)
         duration = len(audio_data) / self.sample_rate
-        self.speech_duration = duration  # WiprFlow: usado no calculo de WPM
+        self.speech_duration = duration  # WhisperEdge: usado no calculo de WPM
 
         ConfigManager.console_print(f'Recording finished. Size: {audio_data.size} samples, Duration: {duration:.2f} seconds')
 

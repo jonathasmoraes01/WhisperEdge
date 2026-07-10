@@ -1,5 +1,5 @@
 """
-Tema central do WiprFlow. Le assets/theme.qss (template com @VAR@) e substitui
+Tema central do WhisperEdge. Le assets/theme.qss (template com @VAR@) e substitui
 pelas cores do tema (dark/light) e a cor de destaque escolhida na config.
 """
 from paths import asset_path

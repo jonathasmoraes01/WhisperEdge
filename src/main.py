@@ -31,7 +31,7 @@ from utils import ConfigManager
 from i18n import tr
 
 
-class WiprFlowApp(QObject):
+class WhisperEdgeApp(QObject):
     def __init__(self):
         """
         Initialize the application, opening settings window if no configuration file is found.
@@ -65,7 +65,7 @@ class WiprFlowApp(QObject):
         self.key_listener = KeyListener()
         self.key_listener.add_callback("on_activate", self.on_activation)
         self.key_listener.add_callback("on_deactivate", self.on_deactivation)
-        # WiprFlow: Command Mode (segunda hotkey)
+        # WhisperEdge: Command Mode (segunda hotkey)
         self.key_listener.add_callback("on_command_activate", self.on_command_activation)
         self.command_result_thread = None
         self.command_target = ''
@@ -96,7 +96,7 @@ class WiprFlowApp(QObject):
         Create the system tray icon and its context menu.
         """
         self.tray_icon = QSystemTrayIcon(QIcon(os.path.join('assets', 'ww-logo.png')), self.app)
-        self.tray_icon.setToolTip('WiprFlow')
+        self.tray_icon.setToolTip('WhisperEdge')
 
         tray_menu = QMenu()
 
@@ -195,7 +195,7 @@ class WiprFlowApp(QObject):
         """
         self.input_simulator.typewrite(result)
 
-        # WiprFlow: registra o dictado no historico e nas estatisticas.
+        # WhisperEdge: registra o dictado no historico e nas estatisticas.
         self._record_dictation(result)
 
         if ConfigManager.get_config_value('misc', 'noise_on_completion'):
@@ -207,7 +207,7 @@ class WiprFlowApp(QObject):
             self.key_listener.start()
 
     def on_command_activation(self):
-        """WiprFlow — Command Mode: captura o texto-alvo e grava a instrucao falada."""
+        """WhisperEdge — Command Mode: captura o texto-alvo e grava a instrucao falada."""
         if not ConfigManager.get_config_value('command_mode', 'enabled'):
             return
         if self.command_result_thread and self.command_result_thread.isRunning():
@@ -225,7 +225,7 @@ class WiprFlowApp(QObject):
         self.command_result_thread.start()
 
     def on_command_complete(self, instruction):
-        """WiprFlow — aplica a instrucao ao texto-alvo via LLM e digita o resultado."""
+        """WhisperEdge — aplica a instrucao ao texto-alvo via LLM e digita o resultado."""
         try:
             instruction = (instruction or '').strip()
             if instruction:
@@ -240,7 +240,7 @@ class WiprFlowApp(QObject):
             self.key_listener.start()
 
     def _record_dictation(self, result):
-        """WiprFlow: salva o dictado no historico e atualiza as estatisticas."""
+        """WhisperEdge: salva o dictado no historico e atualiza as estatisticas."""
         try:
             text = (result or '').strip()
             if not text:
@@ -262,5 +262,5 @@ class WiprFlowApp(QObject):
 
 
 if __name__ == '__main__':
-    app = WiprFlowApp()
+    app = WhisperEdgeApp()
     app.run()

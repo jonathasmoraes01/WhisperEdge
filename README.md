@@ -1,12 +1,12 @@
-# <img src="./assets/ww-logo.png" alt="WiprFlow" width="26" height="26"> WiprFlow
+# <img src="./assets/ww-logo.png" alt="WhisperEdge" width="26" height="26"> WhisperEdge
 
-**Ditado por voz fluido, local e privado.** WiprFlow escuta um atalho global,
+**Ditado por voz fluido, local e privado.** WhisperEdge escuta um atalho global,
 transcreve sua fala com [faster-whisper](https://github.com/SYSTRAN/faster-whisper)
 rodando **no seu computador** e digita o texto onde estiver o cursor — em qualquer
 aplicativo. Inspirado no Wispr Flow, com uma pílula flutuante e waveform animada,
 tema escuro e recursos de produtividade — **sem depender de nuvem**.
 
-> WiprFlow é um rebrand/evolução do excelente projeto open-source
+> WhisperEdge é um rebrand/evolução do excelente projeto open-source
 > [WhisperWriter](https://github.com/savbell/whisper-writer) (GPL-3.0).
 
 ---
@@ -41,8 +41,8 @@ Tudo que é IA/nuvem é **opcional e desligável**; nada de chaves de API no có
 Pré-requisitos: **Python 3.11** (recomendado) e um microfone.
 
 ```bash
-git clone <este-repo> wiprflow
-cd wiprflow
+git clone <este-repo> whisper-edge
+cd whisper-edge
 python -m venv .venv
 # Windows:
 .venv\Scripts\activate
@@ -84,7 +84,7 @@ resultado. Requer `llm_post_processing` configurado.
 ## ⚙️ Configuração
 
 As opções ficam em `src/config.yaml` (geradas do `src/config_schema.yaml`) e são
-editáveis pela UI de **Configurações**. Principais seções novas do WiprFlow:
+editáveis pela UI de **Configurações**. Principais seções novas do WhisperEdge:
 
 | Seção | Chaves | O que faz |
 |------|--------|-----------|
@@ -132,6 +132,6 @@ assets/  theme.qss, ww-logo.png/.ico, sons e icones
 
 ## 📜 Licença e créditos
 
-GNU **GPL-3.0** (preservada do projeto original). WiprFlow é baseado em
+GNU **GPL-3.0** (preservada do projeto original). WhisperEdge é baseado em
 [WhisperWriter](https://github.com/savbell/whisper-writer) de sav (savbell) e
 contribuidores. Veja `LICENSE`.

@@ -1,5 +1,5 @@
 """
-Command Mode do WiprFlow: a fala vira uma INSTRUCAO sobre um texto-alvo
+Command Mode do WhisperEdge: a fala vira uma INSTRUCAO sobre um texto-alvo
 (selecao atual ou clipboard), processada por LLM. Ex.: "deixe mais formal",
 "vire em bullets", "resuma".
 

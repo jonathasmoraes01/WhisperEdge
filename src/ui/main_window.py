@@ -18,12 +18,12 @@ class MainWindow(BaseWindow):
 
     def __init__(self):
         """Initialize the main window (acessivel pelo icone da bandeja)."""
-        super().__init__('WiprFlow', 360, 210)
+        super().__init__('WhisperEdge', 360, 210)
         self.initMainUI()
 
     def initMainUI(self):
         """Cabecalho da marca + atalho atual + botao de configuracoes."""
-        title = QLabel('WiprFlow')
+        title = QLabel('WhisperEdge')
         title.setProperty('role', 'title')
         title.setAlignment(Qt.AlignCenter)
 

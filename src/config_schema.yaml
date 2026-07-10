@@ -167,7 +167,7 @@ misc:
     description: "Set to true to play a noise after the transcription has been typed out."
 
 # ---------------------------------------------------------------------------
-# WiprFlow — opcoes adicionais (interface, LLM, command mode, dados locais)
+# WhisperEdge — opcoes adicionais (interface, LLM, command mode, dados locais)
 # ---------------------------------------------------------------------------
 
 # Aparencia / idioma da interface

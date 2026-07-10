@@ -1,5 +1,5 @@
 """
-WiprFlow — janela de Configuracoes redesenhada, com abas limpas:
+WhisperEdge — janela de Configuracoes redesenhada, com abas limpas:
 Geral, Gravacao, Modelo, Aprimorar (LLM/Command), Dicionario, Snippets,
 Historico, Estatisticas e Sobre. Tema escuro central (QSS) + i18n EN/PT.
 
@@ -307,7 +307,7 @@ class SettingsWindow(BaseWindow):
         layout = QVBoxLayout(inner)
         layout.setContentsMargins(24, 24, 24, 24)
         layout.setSpacing(10)
-        name = QLabel('WiprFlow')
+        name = QLabel('WhisperEdge')
         name.setProperty('role', 'title')
         tagline = QLabel(tr('app_tagline'))
         tagline.setProperty('role', 'subtitle')
@@ -352,7 +352,7 @@ class SettingsWindow(BaseWindow):
             pass
 
         ConfigManager.save_config()
-        QMessageBox.information(self, 'WiprFlow', tr('saved'))
+        QMessageBox.information(self, 'WhisperEdge', tr('saved'))
         self.settings_saved.emit()
         self.close()
 

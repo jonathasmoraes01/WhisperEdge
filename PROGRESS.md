@@ -1,4 +1,4 @@
-# WiprFlow — Estado do Loop
+# WhisperEdge — Estado do Loop
 
 **Última atualização:** 2026-07-10 — **CONCLUÍDO**
 **Diretório:** `C:\Users\Administrator\Tools\whisper-writer` (venv `.venv` Python 3.11).
@@ -10,8 +10,8 @@
 ## Checklist — TUDO ✅
 
 ### Rebrand
-- [x] Textos WhisperWriter → WiprFlow (UI, classe `WiprFlowApp`, bandeja, run.py, README, CHANGELOG)
-- [x] Logo/ícone WiprFlow original (`assets/ww-logo.png/.ico` — quadrado roxo + waveform)
+- [x] Textos WhisperWriter → WhisperEdge (UI, classe `WhisperEdgeApp`, bandeja, run.py, README, CHANGELOG)
+- [x] Logo/ícone WhisperEdge original (`assets/ww-logo.png/.ico` — quadrado roxo + waveform)
 
 ### UI
 - [x] Tema QSS escuro centralizado (`assets/theme.qss` + `src/theme.py`, accent configurável)
@@ -30,7 +30,7 @@
 
 ### Docs
 - [x] README reescrito (features, instalação, config, i18n, créditos)
-- [x] CHANGELOG atualizado (entrada WiprFlow 1.0)
+- [x] CHANGELOG atualizado (entrada WhisperEdge 1.0)
 - [x] requirements.txt reescrito (UTF-8, conjunto testado 3.11)
 
 ### Verificação final

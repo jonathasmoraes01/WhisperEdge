@@ -39,7 +39,7 @@ class BaseWindow(QMainWindow):
 
         # Add the title label
         _pal = get_palette()
-        title_label = QLabel('WiprFlow')
+        title_label = QLabel('WhisperEdge')
         title_label.setFont(QFont('Segoe UI', 12, QFont.Bold))
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setStyleSheet(f"color: {_pal.get('TEXT', '#e9e9f1')}; background: transparent;")

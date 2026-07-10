@@ -1,4 +1,4 @@
-"""Caminhos centrais do WiprFlow (raiz do app, pasta de dados, assets)."""
+"""Caminhos centrais do WhisperEdge (raiz do app, pasta de dados, assets)."""
 import os
 
 # Raiz do repositorio (um nivel acima de src/)

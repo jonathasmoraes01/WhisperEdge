@@ -1,5 +1,5 @@
 """
-Pos-processamento de texto do WiprFlow:
+Pos-processamento de texto do WhisperEdge:
 - Dicionario pessoal: forca correcoes de palavras/nomes/jargoes na saida.
 - Snippets por voz: gatilhos falados que expandem em textos maiores.
 

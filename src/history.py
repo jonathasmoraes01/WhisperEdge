@@ -1,5 +1,5 @@
 """
-Historico de dictados do WiprFlow — persistente em SQLite (data/history.db).
+Historico de dictados do WhisperEdge — persistente em SQLite (data/history.db).
 Cada entrada: timestamp, texto, app/janela ativa (quando possivel), nº de palavras.
 """
 import sqlite3

@@ -1,5 +1,5 @@
 """
-Estatisticas de uso do WiprFlow — persistentes em data/stats.json.
+Estatisticas de uso do WhisperEdge — persistentes em data/stats.json.
 Rastreia palavras ditadas, tempo de fala (para WPM), sessoes e streak diario.
 """
 import json

@@ -1,10 +1,10 @@
 """
-WiprFlow — pilula de status flutuante com waveform animada.
+WhisperEdge — pilula de status flutuante com waveform animada.
 
 Aparece discretamente na parte inferior-central da tela durante a gravacao e a
 transcricao. Nao rouba o foco da janela-alvo (WA_ShowWithoutActivating), para que
 o texto seja digitado no lugar certo. Visual escuro, cantos arredondados, com uma
-forma de onda animada — a assinatura visual do WiprFlow.
+forma de onda animada — a assinatura visual do WhisperEdge.
 """
 import os
 import sys

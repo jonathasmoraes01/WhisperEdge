@@ -1,5 +1,5 @@
 """
-i18n minimo do WiprFlow. Dicionario de strings EN/PT + funcao tr().
+i18n minimo do WhisperEdge. Dicionario de strings EN/PT + funcao tr().
 
 O idioma vem de ConfigManager (ui.language). 'auto' segue o locale do sistema.
 Uso: from i18n import tr;  tr('start')  ->  'Iniciar' / 'Start'
@@ -8,14 +8,14 @@ import locale
 
 STRINGS = {
     'en': {
-        'app_name': 'WiprFlow',
+        'app_name': 'WhisperEdge',
         'app_tagline': 'Fluid voice dictation',
-        'main_menu': 'WiprFlow — Main Menu',
+        'main_menu': 'WhisperEdge — Main Menu',
         'start': 'Start',
         'stop': 'Stop',
         'settings': 'Settings',
         'exit': 'Exit',
-        'open_main': 'Open WiprFlow',
+        'open_main': 'Open WhisperEdge',
         'open_settings': 'Open Settings',
         'history': 'History',
         'stats': 'Stats',
@@ -64,14 +64,14 @@ STRINGS = {
         'clear_history': 'Clear history',
     },
     'pt': {
-        'app_name': 'WiprFlow',
+        'app_name': 'WhisperEdge',
         'app_tagline': 'Ditado por voz fluido',
-        'main_menu': 'WiprFlow — Menu Principal',
+        'main_menu': 'WhisperEdge — Menu Principal',
         'start': 'Iniciar',
         'stop': 'Parar',
         'settings': 'Configurações',
         'exit': 'Sair',
-        'open_main': 'Abrir WiprFlow',
+        'open_main': 'Abrir WhisperEdge',
         'open_settings': 'Abrir Configurações',
         'history': 'Histórico',
         'stats': 'Estatísticas',

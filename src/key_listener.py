@@ -281,7 +281,7 @@ class KeyListener:
         self.backends = []
         self.active_backend = None
         self.key_chord = None
-        self.command_key_chord = None  # WiprFlow: chord opcional do Command Mode
+        self.command_key_chord = None  # WhisperEdge: chord opcional do Command Mode
         self.callbacks = {
             "on_activate": [],
             "on_deactivate": [],
@@ -360,7 +360,7 @@ class KeyListener:
         keys = self.parse_key_combination(key_combination)
         self.set_activation_keys(keys)
 
-        # WiprFlow: chord opcional do Command Mode (segunda hotkey).
+        # WhisperEdge: chord opcional do Command Mode (segunda hotkey).
         self.command_key_chord = None
         if ConfigManager.get_config_value('command_mode', 'enabled'):
             cmd_combo = ConfigManager.get_config_value('command_mode', 'activation_key')

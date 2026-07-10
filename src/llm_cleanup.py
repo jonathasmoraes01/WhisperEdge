@@ -1,5 +1,5 @@
 """
-Limpeza/edicao de texto por LLM (opcional) do WiprFlow.
+Limpeza/edicao de texto por LLM (opcional) do WhisperEdge.
 
 Provedores suportados:
 - 'openai'  : qualquer endpoint OpenAI-compat (OpenAI, Groq, etc.)
