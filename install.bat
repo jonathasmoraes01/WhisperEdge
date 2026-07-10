@@ -48,6 +48,13 @@ if errorlevel 1 (
     exit /b 1
 )
 
+rem ---- 3b) GPU NVIDIA (opcional) --------------------------------------------
+choice /C SN /M "Tem placa NVIDIA e quer usar a GPU para transcrever (mais rapido)"
+if !errorlevel! EQU 1 (
+    echo Instalando bibliotecas CUDA (cuBLAS/cuDNN)...
+    ".venv\Scripts\python.exe" -m pip install -r requirements-gpu.txt -q
+)
+
 rem ---- 4) atalhos -----------------------------------------------------------
 echo [4/4] Criando atalho na Area de Trabalho...
 powershell -NoProfile -Command ^

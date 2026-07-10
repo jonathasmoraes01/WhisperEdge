@@ -146,6 +146,10 @@ post_processing:
     value: true
     type: bool
     description: "Tambem copia cada transcricao para a area de transferencia, para colar caso nenhum campo esteja focado."
+  spoken_punctuation:
+    value: false
+    type: bool
+    description: "Converte comandos falados em pontuacao: 'virgula', 'ponto final', 'nova linha', 'comma', 'period' etc."
   input_method:
     value: pynput
     type: str
@@ -184,6 +188,7 @@ ui:
       - auto
       - en
       - pt
+      - es
   theme:
     value: dark
     type: str

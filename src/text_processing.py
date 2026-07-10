@@ -132,12 +132,72 @@ def apply_snippets(text):
     return text
 
 
+# --- Pontuacao por comando de voz (opt-in) ----------------------------------
+# Frases mais longas primeiro para nao serem "engolidas" pelas curtas.
+SPOKEN_PUNCTUATION = [
+    # pt-BR
+    ('ponto de interrogação', '?'), ('ponto de exclamação', '!'),
+    ('ponto e vírgula', ';'), ('dois pontos', ':'), ('ponto final', '.'),
+    ('novo parágrafo', '\n\n'), ('nova linha', '\n'), ('quebra de linha', '\n'),
+    ('abre parênteses', '('), ('fecha parênteses', ')'),
+    ('abre aspas', '"'), ('fecha aspas', '"'),
+    ('reticências', '…'), ('travessão', '—'), ('vírgula', ','), ('ponto', '.'),
+    # en
+    ('question mark', '?'), ('exclamation mark', '!'), ('exclamation point', '!'),
+    ('semicolon', ';'), ('colon', ':'), ('full stop', '.'), ('period', '.'),
+    ('new paragraph', '\n\n'), ('new line', '\n'),
+    ('open quote', '"'), ('close quote', '"'),
+    ('open parenthesis', '('), ('close parenthesis', ')'),
+    ('ellipsis', '…'), ('comma', ','),
+]
+
+
+_SPOKEN_MAP = {phrase.lower(): symbol for phrase, symbol in SPOKEN_PUNCTUATION}
+_SPOKEN_RE = re.compile(
+    r'[,.;:]?\s*(?<!\w)('
+    + '|'.join(re.escape(p) for p, _ in SPOKEN_PUNCTUATION)
+    + r')(?!\w)\s*[,.;:]?',
+    re.IGNORECASE | re.UNICODE,
+)
+
+
+def apply_spoken_punctuation(text):
+    """Converte comandos falados em pontuacao ("virgula" -> ",").
+
+    Passada UNICA com alternacao (frases longas primeiro): um simbolo inserido
+    por um comando nunca e re-processado pelo comando seguinte. Tambem remove
+    pontuacao que o Whisper tenha colado no comando ("texto, vírgula, texto").
+    """
+    if not text:
+        return text
+
+    def _sub(match):
+        symbol = _SPOKEN_MAP[match.group(1).lower()]
+        return symbol if symbol in ('\n', '\n\n') else symbol + ' '
+
+    text = _SPOKEN_RE.sub(_sub, text)
+    # higiene de espacamento: sem espaco antes de pontuacao; um depois
+    text = re.sub(r'[ \t]+([,.;:!?…])', r'\1', text)
+    text = re.sub(r'([,;:!?])(\w)', r'\1 \2', text)
+    text = re.sub(r'[ \t]+\n', '\n', text)
+    text = re.sub(r'\n[ \t]+', '\n', text)
+    text = re.sub(r'[ \t]{2,}', ' ', text)
+    return text.strip()
+
+
 def enhance_text(text):
     """Pipeline de aprimoramento aplicado apos a transcricao bruta.
     Ordem: LLM clean-up (opcional) -> dicionario -> snippets.
     Tudo protegido: se algo falhar, retorna o melhor texto disponivel."""
     if not text:
         return text
+
+    # 0) Pontuacao por comando de voz (opt-in), sobre o texto bruto do Whisper.
+    try:
+        if ConfigManager.get_config_value('post_processing', 'spoken_punctuation'):
+            text = apply_spoken_punctuation(text)
+    except Exception as e:
+        ConfigManager.console_print(f'[enhance] pontuacao por voz ignorada: {e}')
 
     # 1) Limpeza opcional por LLM (nao obrigatoria; desligavel).
     try:

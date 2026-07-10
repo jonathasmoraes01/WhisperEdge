@@ -1,0 +1,5 @@
+# WhisperEdge — aceleracao por GPU NVIDIA (opcional)
+# Instale com:  .venv\Scripts\pip install -r requirements-gpu.txt
+# Requer driver NVIDIA recente (CUDA 12). Nao precisa do CUDA Toolkit.
+nvidia-cublas-cu12
+nvidia-cudnn-cu12

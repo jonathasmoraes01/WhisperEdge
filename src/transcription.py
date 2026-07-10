@@ -7,39 +7,65 @@ from openai import OpenAI
 
 from utils import ConfigManager
 
+def _add_nvidia_dll_dirs():
+    """Registra as DLLs CUDA (cuBLAS/cuDNN) instaladas via pip
+    (pacotes nvidia-cublas-cu12 / nvidia-cudnn-cu12) no caminho de busca,
+    para a GPU funcionar sem instalar o CUDA Toolkit."""
+    try:
+        import glob
+        import nvidia  # namespace package: usar __path__ (nao tem __file__)
+        for base in list(getattr(nvidia, '__path__', [])):
+            for bin_dir in glob.glob(os.path.join(base, '*', 'bin')):
+                try:
+                    os.add_dll_directory(bin_dir)
+                except Exception:
+                    pass
+                os.environ['PATH'] = bin_dir + os.pathsep + os.environ.get('PATH', '')
+    except Exception:
+        pass
+
+
+def _cuda_available():
+    """True se o ctranslate2 enxerga uma GPU NVIDIA utilizavel."""
+    try:
+        import ctranslate2
+        return ctranslate2.get_cuda_device_count() > 0
+    except Exception:
+        return False
+
+
 def create_local_model():
     """
     Create a local model using the faster-whisper library.
+
+    device 'auto': tenta GPU NVIDIA (CUDA) e cai para CPU com int8 se a GPU
+    nao estiver disponivel ou falhar ao carregar (ex.: cuDNN ausente).
     """
     ConfigManager.console_print('Creating local model...')
     local_model_options = ConfigManager.get_config_section('model_options')['local']
-    compute_type = local_model_options['compute_type']
+    compute_type = local_model_options['compute_type'] or 'default'
     model_path = local_model_options.get('model_path')
+    device = local_model_options['device'] or 'auto'
+    model_name = model_path or local_model_options['model']
 
-    if compute_type == 'int8':
-        device = 'cpu'
-        ConfigManager.console_print('Using int8 quantization, forcing CPU usage.')
-    else:
-        device = local_model_options['device']
+    if device == 'auto':
+        device = 'cuda' if _cuda_available() else 'cpu'
+    if device == 'cuda':
+        _add_nvidia_dll_dirs()
+
+    # Ajusta o compute_type ao dispositivo quando o usuario deixou 'default'.
+    if compute_type == 'default':
+        compute_type = 'float16' if device == 'cuda' else 'int8'
+    if device == 'cpu' and compute_type == 'float16':
+        compute_type = 'int8'  # float16 nao roda em CPU
 
     try:
-        if model_path:
-            ConfigManager.console_print(f'Loading model from: {model_path}')
-            model = WhisperModel(model_path,
-                                 device=device,
-                                 compute_type=compute_type,
-                                 download_root=None)  # Prevent automatic download
-        else:
-            model = WhisperModel(local_model_options['model'],
-                                 device=device,
-                                 compute_type=compute_type)
+        ConfigManager.console_print(f'Loading model on {device} ({compute_type})...')
+        model = WhisperModel(model_name, device=device, compute_type=compute_type)
     except Exception as e:
-        ConfigManager.console_print(f'Error initializing WhisperModel: {e}')
-        ConfigManager.console_print('Falling back to CPU.')
-        model = WhisperModel(model_path or local_model_options['model'],
-                             device='cpu',
-                             compute_type=compute_type,
-                             download_root=None if model_path else None)
+        ConfigManager.console_print(f'Error initializing WhisperModel on {device}: {e}')
+        ConfigManager.console_print('Falling back to CPU (int8).')
+        model = WhisperModel(model_name, device='cpu', compute_type='int8')
 
     ConfigManager.console_print('Local model created.')
     return model

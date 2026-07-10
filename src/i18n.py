@@ -129,15 +129,75 @@ STRINGS = {
         'copy': 'Copiar',
         'clear_history': 'Limpar histórico',
     },
+    'es': {
+        'app_name': 'WhisperEdge',
+        'app_tagline': 'Dictado por voz fluido',
+        'main_menu': 'WhisperEdge — Menú principal',
+        'start': 'Iniciar',
+        'stop': 'Detener',
+        'settings': 'Configuración',
+        'exit': 'Salir',
+        'open_main': 'Abrir WhisperEdge',
+        'open_settings': 'Abrir Configuración',
+        'history': 'Historial',
+        'stats': 'Estadísticas',
+        'status_idle': 'Listo',
+        'status_recording': 'Escuchando…',
+        'status_transcribing': 'Transcribiendo…',
+        'status_thinking': 'Limpiando texto…',
+        'status_command': 'Ejecutando comando…',
+        'status_done': 'Listo',
+        'status_error': 'Error',
+        'tab_general': 'General',
+        'tab_recording': 'Grabación',
+        'tab_model': 'Modelo',
+        'tab_enhance': 'Mejorar',
+        'tab_dictionary': 'Diccionario',
+        'tab_snippets': 'Snippets',
+        'tab_profiles': 'Perfiles de app',
+        'tab_history': 'Historial',
+        'tab_stats': 'Estadísticas',
+        'tab_about': 'Acerca de',
+        'save': 'Guardar',
+        'reset': 'Restaurar valores',
+        'saved': 'Configuración guardada.',
+        'llm_cleanup': 'Limpieza por IA',
+        'llm_cleanup_desc': 'Envía la transcripción a un LLM para corregir puntuación y quitar muletillas.',
+        'command_mode': 'Modo Comando',
+        'dict_desc': 'Fuerza correcciones de palabras/nombres específicos en la salida.',
+        'snip_desc': 'Disparadores hablados que se expanden en textos más largos.',
+        'prof_desc': 'Adapta el estilo del texto a la app activa (requiere Limpieza por IA): '
+                     'si el título de la ventana contiene el término, se aplica la instrucción.',
+        'app_match': 'Ventana contiene',
+        'style_instr': 'Instrucción de estilo',
+        'add': 'Añadir',
+        'remove': 'Quitar',
+        'trigger': 'Disparador (hablado)',
+        'replacement': 'Expansión',
+        'wrong': 'Oído como',
+        'right': 'Corregir a',
+        'words_total': 'Palabras dictadas',
+        'words_today': 'Palabras hoy',
+        'avg_wpm': 'Velocidad media (PPM)',
+        'streak': 'Racha diaria',
+        'sessions': 'Dictados',
+        'no_history': 'Aún no hay dictados. ¡Pulsa el atajo y habla!',
+        'copy': 'Copiar',
+        'clear_history': 'Borrar historial',
+    },
 }
 
 
 def _system_language():
     try:
-        loc = locale.getdefaultlocale()[0] or ''
+        loc = (locale.getdefaultlocale()[0] or '').lower()
     except Exception:
         loc = ''
-    return 'pt' if loc.lower().startswith('pt') else 'en'
+    if loc.startswith('pt'):
+        return 'pt'
+    if loc.startswith('es'):
+        return 'es'
+    return 'en'
 
 
 def current_language():
@@ -204,6 +264,7 @@ FIELD_META = {
         'post_processing.add_trailing_space': ('Add trailing space', ''),
         'post_processing.remove_capitalization': ('Lowercase everything', ''),
         'post_processing.copy_to_clipboard': ('Copy to clipboard', 'Also keep each transcript ready to paste.'),
+        'post_processing.spoken_punctuation': ('Spoken punctuation', 'Say "comma", "period", "new line" to punctuate.'),
         'post_processing.input_method': ('Typing method', ''),
         'model_options.use_api': ('Use cloud API', 'Off = transcribe locally (private, offline).'),
         'model_options.common.language': ('Spoken language', 'ISO code, e.g. pt, en. Empty = auto-detect.'),
@@ -254,6 +315,7 @@ FIELD_META = {
         'post_processing.add_trailing_space': ('Adicionar espaço ao final', ''),
         'post_processing.remove_capitalization': ('Tudo em minúsculas', ''),
         'post_processing.copy_to_clipboard': ('Copiar para a área de transferência', 'Deixa cada transcrição pronta para colar.'),
+        'post_processing.spoken_punctuation': ('Pontuação por voz', 'Fale "vírgula", "ponto final", "nova linha" para pontuar.'),
         'post_processing.input_method': ('Método de digitação', ''),
         'model_options.use_api': ('Usar API na nuvem', 'Desligado = transcreve localmente (privado, offline).'),
         'model_options.common.language': ('Idioma falado', 'Código ISO, ex.: pt, en. Vazio = detectar.'),
