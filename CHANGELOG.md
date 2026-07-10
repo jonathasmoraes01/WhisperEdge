@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [WhisperEdge 1.1] - 2026-07-10
+### UI overhaul
+- Redesign completo do front-end, **sem emojis**: rótulos e descrições amigáveis
+  PT/EN para todas as configurações (`i18n.FIELD_META`), toggles estilo switch,
+  cards por seção com divisórias, sidebar com barra de destaque no item ativo,
+  ícones desenhados em código (`ui/widgets.py`), janela principal com marca e
+  chip de atalho, paleta mais profunda e QSS refinado.
+
+### Fixed
+- Atalho disparava com Ctrl+QUALQUER tecla: o backend pynput mapeava teclas
+  desconhecidas para `SPACE` por padrão; agora eventos fora do mapa são ignorados.
+
 ### Added
 - **Indicador flutuante persistente**: pílula discreta que mostra o app aberto e
   **expande no hover** com mini-controles (gravar / configurações / janela).
