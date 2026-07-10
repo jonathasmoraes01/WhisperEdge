@@ -39,14 +39,19 @@ STRINGS = {
         'tab_about': 'About',
         'save': 'Save',
         'reset': 'Reset to defaults',
-        'saved': 'Settings saved. Restarting…',
+        'saved': 'Settings saved.',
         # enhance
         'llm_cleanup': 'AI clean-up',
         'llm_cleanup_desc': 'Send the transcript to an LLM to fix punctuation and remove filler words.',
         'command_mode': 'Command Mode',
-        # dictionary / snippets
+        # dictionary / snippets / app profiles
         'dict_desc': 'Force corrections of specific words/names in the output.',
         'snip_desc': 'Spoken triggers that expand into longer text.',
+        'tab_profiles': 'App profiles',
+        'prof_desc': 'Adapt the writing style to the active app (requires AI clean-up ON): '
+                     'when the window title contains the term, the style instruction is applied.',
+        'app_match': 'Window contains',
+        'style_instr': 'Style instruction',
         'add': 'Add',
         'remove': 'Remove',
         'trigger': 'Trigger (spoken)',
@@ -95,14 +100,19 @@ STRINGS = {
         'tab_about': 'Sobre',
         'save': 'Salvar',
         'reset': 'Restaurar padrões',
-        'saved': 'Configurações salvas. Reiniciando…',
+        'saved': 'Configurações salvas.',
         # enhance
         'llm_cleanup': 'Limpeza por IA',
         'llm_cleanup_desc': 'Envia a transcrição a um LLM para corrigir pontuação e remover hesitações.',
         'command_mode': 'Modo Comando',
-        # dictionary / snippets
+        # dictionary / snippets / app profiles
         'dict_desc': 'Força correções de palavras/nomes específicos na saída.',
         'snip_desc': 'Gatilhos falados que expandem em textos maiores.',
+        'tab_profiles': 'Perfis de app',
+        'prof_desc': 'Adapta o estilo do texto ao app ativo (requer Limpeza por IA ligada): '
+                     'se o título da janela contiver o termo, a instrução de estilo é aplicada.',
+        'app_match': 'Janela contém',
+        'style_instr': 'Instrução de estilo',
         'add': 'Adicionar',
         'remove': 'Remover',
         'trigger': 'Gatilho (falado)',

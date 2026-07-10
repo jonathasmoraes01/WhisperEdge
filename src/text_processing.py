@@ -52,6 +52,58 @@ def set_snippets(entries):
     _save(SNIP_FILE, entries)
 
 
+# --- Perfis por app: [{"match": "discord", "style": "tom casual"}] -----------
+# Adapta o ESTILO da limpeza por IA conforme a janela ativa (so age quando a
+# Limpeza por IA esta ligada — sem LLM nao ha como reescrever o texto).
+PROFILES_FILE = 'app_profiles.json'
+
+DEFAULT_PROFILES = [
+    {'match': 'discord',
+     'style': 'Tom casual e direto, como mensagem de chat entre amigos. Pode ser informal.'},
+    {'match': 'whatsapp',
+     'style': 'Tom casual de mensagem. Frases curtas.'},
+    {'match': 'telegram',
+     'style': 'Tom casual de mensagem. Frases curtas.'},
+    {'match': 'antigravity',
+     'style': 'O texto e um PROMPT para uma IA de programacao: estruture com clareza, '
+              'objetivo primeiro e detalhes depois, remova redundancias e ambiguidades.'},
+    {'match': 'cursor',
+     'style': 'O texto e um PROMPT para uma IA de programacao: claro, estruturado e sem ambiguidade.'},
+    {'match': 'visual studio code',
+     'style': 'O texto e um PROMPT/instrucao tecnica: claro, estruturado e preciso.'},
+    {'match': 'claude',
+     'style': 'O texto e um PROMPT para uma IA: organize bem o pedido, contexto e criterios.'},
+    {'match': 'gmail',
+     'style': 'Tom profissional e cordial de e-mail.'},
+    {'match': 'outlook',
+     'style': 'Tom profissional e cordial de e-mail.'},
+]
+
+
+def get_app_profiles():
+    entries = _load(PROFILES_FILE, None)
+    if entries is None:
+        _save(PROFILES_FILE, DEFAULT_PROFILES)
+        return [dict(e) for e in DEFAULT_PROFILES]
+    return entries if isinstance(entries, list) else []
+
+
+def set_app_profiles(entries):
+    _save(PROFILES_FILE, entries)
+
+
+def style_for_window(title):
+    """Instrucao de estilo para a janela ativa (substring, case-insensitive)."""
+    t = (title or '').lower()
+    if not t:
+        return ''
+    for entry in get_app_profiles():
+        m = (entry.get('match') or '').lower().strip()
+        if m and m in t:
+            return entry.get('style') or ''
+    return ''
+
+
 def _replace_whole(text, needle, replacement):
     """Substitui 'needle' por 'replacement' respeitando limites de palavra,
     ignorando maiusculas/minusculas. Usa funcao no replacement para nao

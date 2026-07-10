@@ -94,6 +94,20 @@ def clean_up(text):
     if not text or not text.strip():
         return text
     system_prompt = _cfg('system_prompt') or 'Corrija pontuacao e remova hesitacoes. Devolva apenas o texto limpo.'
+
+    # WhisperEdge — perfis por app: adapta o estilo conforme a janela ativa
+    # (ex.: Discord = casual; IDE = prompt tecnico). Ver data/app_profiles.json.
+    try:
+        from history import get_active_window_title
+        from text_processing import style_for_window
+        title = get_active_window_title()
+        style = style_for_window(title)
+        if style:
+            system_prompt += (f"\n\nContexto: o usuario esta ditando na janela "
+                              f"'{title[:70]}'. Ajuste o estilo do texto: {style}")
+    except Exception:
+        pass
+
     try:
         result = chat(system_prompt, text)
         return result or text

@@ -48,7 +48,7 @@ class WhisperEdgeApp(QObject):
 
         self.settings_window = SettingsWindow()
         self.settings_window.settings_closed.connect(self.on_settings_closed)
-        self.settings_window.settings_saved.connect(self.restart_app)
+        self.settings_window.settings_saved.connect(self.on_settings_saved)
 
         if ConfigManager.config_file_exists():
             self.initialize_components()
@@ -73,21 +73,22 @@ class WhisperEdgeApp(QObject):
         model_options = ConfigManager.get_config_section('model_options')
         model_path = model_options.get('local', {}).get('model_path')
         self.local_model = create_local_model() if not model_options.get('use_api') else None
+        self._model_signature = self._compute_model_signature()
 
         self.result_thread = None
 
         self.main_window = MainWindow()
-        self.main_window.openSettings.connect(self.settings_window.show)
+        self.main_window.openSettings.connect(self.show_settings)
         self.main_window.startListening.connect(self.key_listener.start)
         self.main_window.closeApp.connect(self.exit_app)
 
+        # Indicador persistente: fica visível como uma pílula discreta e
+        # expande no hover; os botões controlam gravação/config/janela.
+        self.status_window = StatusWindow()
+        self.status_window.recordClicked.connect(self.on_activation)
+        self.status_window.settingsClicked.connect(self.show_settings)
+        self.status_window.expandClicked.connect(self.main_window.show)
         if not ConfigManager.get_config_value('misc', 'hide_status_window'):
-            self.status_window = StatusWindow()
-            # Indicador persistente: fica visível como uma pílula discreta e
-            # expande no hover; os botões controlam gravação/config/janela.
-            self.status_window.recordClicked.connect(self.on_activation)
-            self.status_window.settingsClicked.connect(self.settings_window.show)
-            self.status_window.expandClicked.connect(self.main_window.show)
             self.status_window.show()
 
         self.create_tray_icon()
@@ -111,7 +112,7 @@ class WhisperEdgeApp(QObject):
         tray_menu.addAction(show_action)
 
         settings_action = QAction(tr('open_settings'), self.app)
-        settings_action.triggered.connect(self.settings_window.show)
+        settings_action.triggered.connect(self.show_settings)
         tray_menu.addAction(settings_action)
 
         exit_action = QAction(tr('exit'), self.app)
@@ -139,6 +140,70 @@ class WhisperEdgeApp(QObject):
         self.cleanup()
         QApplication.quit()
         QProcess.startDetached(sys.executable, sys.argv)
+
+    def show_settings(self):
+        """Abre a janela de configuracoes atual (indirecao estavel p/ conexoes)."""
+        self.settings_window.show()
+
+    def _compute_model_signature(self):
+        """Assinatura das opcoes que exigem recarregar o modelo de transcricao."""
+        mo = ConfigManager.get_config_section('model_options')
+        local = mo.get('local', {}) or {}
+        return (bool(mo.get('use_api')), local.get('model'), local.get('device'),
+                local.get('compute_type'), local.get('model_path'))
+
+    def on_settings_saved(self):
+        """Aplica as configuracoes salvas A QUENTE — sem reiniciar o app.
+
+        Atalhos, tema, indicador e idioma sao aplicados na hora. O modelo de
+        transcricao so e recarregado (em segundo plano) se suas opcoes mudarem.
+        """
+        # Tema/cores
+        from theme import apply_theme
+        apply_theme(self.app)
+
+        # Hotkeys (ditado + command mode)
+        try:
+            self.key_listener.load_activation_keys()
+        except Exception as e:
+            ConfigManager.console_print(f'[settings] hotkeys: {e}')
+
+        # Indicador flutuante: visibilidade + cores novas
+        if getattr(self, 'status_window', None):
+            self.status_window._apply_colors()
+            if ConfigManager.get_config_value('misc', 'hide_status_window'):
+                self.status_window.hide()
+            else:
+                self.status_window.show()
+
+        # Modelo: recarrega em segundo plano apenas se as opcoes mudaram
+        new_sig = self._compute_model_signature()
+        if new_sig != getattr(self, '_model_signature', None):
+            self._model_signature = new_sig
+            if new_sig[0]:  # use_api ligado -> modelo local dispensado
+                self.local_model = None
+            else:
+                import threading
+
+                def _reload():
+                    try:
+                        model = create_local_model()
+                        self.local_model = model
+                        ConfigManager.console_print('[settings] modelo recarregado.')
+                    except Exception as e:
+                        ConfigManager.console_print(f'[settings] recarga do modelo falhou: {e}')
+
+                threading.Thread(target=_reload, daemon=True).start()
+
+        # Recria a janela de configuracoes para refletir idioma/tema na proxima abertura
+        try:
+            old = self.settings_window
+            self.settings_window = SettingsWindow()
+            self.settings_window.settings_closed.connect(self.on_settings_closed)
+            self.settings_window.settings_saved.connect(self.on_settings_saved)
+            old.deleteLater()
+        except Exception as e:
+            ConfigManager.console_print(f'[settings] recriacao da janela: {e}')
 
     def on_settings_closed(self):
         """

@@ -85,11 +85,12 @@ class SettingsWindow(BaseWindow):
         # ---- Páginas
         self.stack = QStackedWidget()
         nav_items = [tr(k) for k, _ in CONFIG_PAGES] + [
-            tr('tab_dictionary'), tr('tab_snippets'),
+            tr('tab_dictionary'), tr('tab_snippets'), tr('tab_profiles'),
             tr('tab_history'), tr('tab_stats'), tr('tab_about'),
         ]
         pages = [self._config_page(cats) for _, cats in CONFIG_PAGES] + [
             self._table_page('dictionary'), self._table_page('snippets'),
+            self._table_page('profiles'),
             self._history_page(), self._stats_page(), self._about_page(),
         ]
         for text, page in zip(nav_items, pages):
@@ -247,33 +248,41 @@ class SettingsWindow(BaseWindow):
         return meta['value'] if v is None else v
 
     # ----------------------------------------------------------- table pages
+    # Especificacao das paginas em tabela: descricao, cabecalhos, chaves e I/O.
+    TABLE_KINDS = {
+        'dictionary': ('dict_desc', ('wrong', 'right'), ('from', 'to')),
+        'snippets': ('snip_desc', ('trigger', 'replacement'), ('trigger', 'expansion')),
+        'profiles': ('prof_desc', ('app_match', 'style_instr'), ('match', 'style')),
+    }
+
     def _table_page(self, kind):
+        desc_key, header_keys, self_keys = self.TABLE_KINDS[kind]
+
         inner = QWidget()
         layout = QVBoxLayout(inner)
         layout.setContentsMargins(4, 4, 12, 12)
         layout.setSpacing(12)
 
-        desc = QLabel(tr('dict_desc') if kind == 'dictionary' else tr('snip_desc'))
+        desc = QLabel(tr(desc_key))
         desc.setProperty('role', 'muted')
         desc.setWordWrap(True)
         layout.addWidget(desc)
 
         table = QTableWidget(0, 2)
-        headers = ([tr('wrong'), tr('right')] if kind == 'dictionary'
-                   else [tr('trigger'), tr('replacement')])
-        table.setHorizontalHeaderLabels(headers)
+        table.setHorizontalHeaderLabels([tr(header_keys[0]), tr(header_keys[1])])
         table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         table.verticalHeader().setVisible(False)
         table.setShowGrid(False)
         layout.addWidget(table, 1)
 
-        entries = (text_processing.get_dictionary() if kind == 'dictionary'
-                   else text_processing.get_snippets())
+        entries = {
+            'dictionary': text_processing.get_dictionary,
+            'snippets': text_processing.get_snippets,
+            'profiles': text_processing.get_app_profiles,
+        }[kind]()
+        a_key, b_key = self_keys
         for e in entries:
-            if kind == 'dictionary':
-                self._table_add(table, e.get('from', ''), e.get('to', ''))
-            else:
-                self._table_add(table, e.get('trigger', ''), e.get('expansion', ''))
+            self._table_add(table, e.get(a_key, ''), e.get(b_key, ''))
 
         buttons = QHBoxLayout()
         add_btn = QPushButton('+ ' + tr('add'))
@@ -289,8 +298,10 @@ class SettingsWindow(BaseWindow):
 
         if kind == 'dictionary':
             self._dict_table = table
-        else:
+        elif kind == 'snippets':
             self._snip_table = table
+        else:
+            self._prof_table = table
         return inner
 
     def _table_add(self, table, a, b):
@@ -434,6 +445,7 @@ class SettingsWindow(BaseWindow):
         try:
             text_processing.set_dictionary(self._read_table(self._dict_table, ('from', 'to')))
             text_processing.set_snippets(self._read_table(self._snip_table, ('trigger', 'expansion')))
+            text_processing.set_app_profiles(self._read_table(self._prof_table, ('match', 'style')))
         except Exception:
             pass
 
