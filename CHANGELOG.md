@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [WiprFlow 1.0] - 2026-07-10
+Rebrand e evolução do WhisperWriter para **WiprFlow** — ditado por voz local,
+inspirado no Wispr Flow, mantendo a licença GPL-3.0 e os créditos originais.
+
+### Added
+- **Pílula flutuante com waveform animada** (`src/ui/status_window.py`) que não
+  rouba o foco da janela-alvo; estados ocioso/gravando/transcrevendo.
+- **Tema escuro central** via `assets/theme.qss` + `src/theme.py` (cor de destaque
+  configurável) aplicado a toda a UI.
+- **i18n EN/PT** (`src/i18n.py`, config `ui.language`).
+- **Limpeza por LLM opcional** (`src/llm_cleanup.py`): OpenAI-compat, Ollama local
+  ou Anthropic, com prompt de sistema editável e fallback seguro. Desligável.
+- **Command Mode** (`src/command_processor.py` + segunda hotkey no `key_listener`):
+  a fala vira instrução sobre a seleção/clipboard, processada por LLM.
+- **Dicionário pessoal** e **Snippets por voz** (`src/text_processing.py`), com
+  editores em tabela nas Configurações.
+- **Histórico de dictados** persistente em SQLite (`src/history.py`) e
+  **Estatísticas** de uso — palavras, WPM, streak (`src/stats.py`) — com telas na UI.
+- **Configurações redesenhadas** com abas (Geral, Gravação, Modelo, Aprimorar,
+  Dicionário, Snippets, Histórico, Estatísticas, Sobre).
+- Novo **logo original** (`assets/ww-logo.png/.ico`).
+- Correções de execução no Windows: `import ctranslate2` antes do PyQt5 (evita
+  segfault), guarda de `sys.stdout` None (rodar oculto), auto-listen na bandeja.
+
+### Changed
+- Rebrand de todas as strings de usuário e da classe principal (`WiprFlowApp`).
+- `requirements.txt` reescrito (UTF-8) para o conjunto testado em Python 3.11.
+- `transcribe()` agora aplica o pipeline de aprimoramento (LLM → dicionário →
+  snippets) antes da formatação final.
+
+### Preserved
+- Os 4 modos de gravação e o pipeline faster-whisper/API originais.
+- Licença GPL-3.0 e créditos ao projeto WhisperWriter.
+
 ## [Unreleased]
 ### Added
 - New settings window to configure WhisperWriter.
