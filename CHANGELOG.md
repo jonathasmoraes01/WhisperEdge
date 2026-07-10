@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [WhisperEdge 1.1] - 2026-07-10
+### Added
+- **Indicador flutuante persistente**: pílula discreta que mostra o app aberto e
+  **expande no hover** com mini-controles (gravar / configurações / janela).
+- **Waveform reativa à voz real**: o `ResultThread` emite o nível de áudio (RMS)
+  e a waveform fica parada no silêncio e se mexe quando você fala.
+- **Fallback de clipboard** (`post_processing.copy_to_clipboard`): cada
+  transcrição também vai para a área de transferência.
+- **Configurações com sidebar** de navegação (estilo SuperWhisper), no lugar das
+  abas no topo.
+
+### Changed
+- Produto renomeado de WiprFlow para **WhisperEdge**.
+- Launchers portáveis `Iniciar WhisperEdge.bat` e `WhisperEdge.vbs`.
+- Higiene do repositório: `config.yaml`/`data/` fora do versionamento; `.env`
+  garantidamente ignorado.
+
 ## [WhisperEdge 1.0] - 2026-07-10
 Rebrand e evolução do WhisperWriter para **WhisperEdge** — ditado por voz local,
 inspirado no Wispr Flow, mantendo a licença GPL-3.0 e os créditos originais.

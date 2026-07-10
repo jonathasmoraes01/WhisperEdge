@@ -15,9 +15,14 @@ tema escuro e recursos de produtividade — **sem depender de nuvem**.
 
 - 🎙️ **Ditado local** com faster-whisper (offline, privado). 4 modos de gravação:
   `continuous`, `voice_activity_detection`, `press_to_toggle`, `hold_to_record`.
-- 🌊 **Pílula flutuante com waveform animada** — feedback visual discreto de
-  ocioso / gravando / transcrevendo, sem roubar o foco da janela onde você digita.
-- 🎨 **Tema escuro** central (QSS) com cor de destaque configurável.
+- 🌊 **Indicador flutuante persistente** — uma pílula pequena e discreta mostra
+  que o app está aberto; ao passar o mouse, expande com mini-controles
+  (gravar / configurações / janela). A **waveform reage à sua voz de verdade**:
+  parada no silêncio, animada quando você fala. Não rouba o foco.
+- 📋 **Fallback de clipboard** — cada transcrição também vai para a área de
+  transferência, para colar mesmo se nenhum campo estava focado.
+- 🎨 **Tema escuro** central (QSS), cor de destaque configurável e
+  **Configurações com sidebar** limpa (navegação lateral por ícones).
 - 🌐 **Bilíngue (EN/PT)** — interface em inglês ou português (auto pelo sistema).
 - 🧹 **Limpeza por IA (opcional)** — envia a transcrição a um LLM para corrigir
   pontuação e remover hesitações ("um", "tipo", "né"). Provedores: OpenAI-compat,
