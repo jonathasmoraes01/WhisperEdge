@@ -133,19 +133,24 @@ class StatusWindow(QWidget):
         self._relayout()
 
     def _icon_button(self, kind, tip, signal):
-        """Botao redondo com icone desenhado em codigo (ui.widgets.icon)."""
+        """Botao redondo com icone desenhado em codigo (ui.widgets.icon).
+        Fundo transparente; hover discreto — o icone nunca some no fundo."""
         from ui.widgets import icon
+        from PyQt5.QtCore import QSize
+        pal = get_palette()
         b = QToolButton()
-        b.setIcon(icon(kind, 14))
+        # gravar = ponto na cor de destaque; demais = cor do texto
+        color = pal.get('ACCENT', '#6C5CE7') if kind == 'record' else pal.get('TEXT', '#ececf4')
+        b.setIcon(icon(kind, 16, color))
+        b.setIconSize(QSize(16, 16))
         b.setToolTip(tip)
         b.setCursor(Qt.PointingHandCursor)
-        b.setFixedSize(26, 26)
+        b.setFixedSize(32, 32)
         b.clicked.connect(signal.emit)
-        pal = get_palette()
         b.setStyleSheet(
-            f"QToolButton {{ background: {pal.get('PANEL2', '#20202a')};"
-            f" border: none; border-radius: 13px; }}"
-            f"QToolButton:hover {{ background: {pal.get('ACCENT', '#6C5CE7')}; }}"
+            "QToolButton { background: transparent; border: none; border-radius: 16px; }"
+            f"QToolButton:hover {{ background: {pal.get('PANEL2', '#20202a')}; }}"
+            f"QToolButton:pressed {{ background: {pal.get('BORDER', '#2a2a36')}; }}"
         )
         return b
 
@@ -171,13 +176,15 @@ class StatusWindow(QWidget):
             self.layout.setContentsMargins(0, 0, 0, 0)
             self.setFixedSize(18, 18)
         elif show_controls:
-            self.layout.setContentsMargins(12, 6, 12, 6)
+            self.layout.setContentsMargins(10, 6, 10, 6)
+            self.layout.setSpacing(6)
             self.wave.setFixedWidth(0)
-            self.setFixedSize(126, 38)
+            self.setFixedSize(136, 44)
         else:  # recording / transcribing
-            self.layout.setContentsMargins(14, 7, 14, 7)
+            self.layout.setContentsMargins(16, 8, 16, 8)
+            self.layout.setSpacing(10)
             self.wave.setFixedWidth(130)
-            self.setFixedSize(248, 38)
+            self.setFixedSize(252, 42)
 
         self._position()
         self.update()
@@ -198,22 +205,28 @@ class StatusWindow(QWidget):
         self.move(x, y)
 
     def paintEvent(self, _event):
+        from PyQt5.QtGui import QPen
+        pal = get_palette()
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
-        p.setPen(Qt.NoPen)
+        border = QPen(QColor(pal.get('BORDER', '#2a2a36')), 1)
         if self.state == 'idle' and not self.hovered:
             # bolinha: circulo escuro com um pontinho de destaque no centro
+            p.setPen(border)
             p.setBrush(QBrush(self._bg))
-            p.drawEllipse(self.rect())
-            dot = QColor(get_palette().get('ACCENT', '#6C5CE7'))
+            p.drawEllipse(QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5))
+            p.setPen(Qt.NoPen)
+            dot = QColor(pal.get('ACCENT', '#6C5CE7'))
             dot.setAlpha(210)
             p.setBrush(QBrush(dot))
             cx, cy, r = self.width() / 2, self.height() / 2, 3.0
             p.drawEllipse(QRectF(cx - r, cy - r, 2 * r, 2 * r))
         else:
             path = QPainterPath()
-            r = self.height() / 2
-            path.addRoundedRect(QRectF(self.rect()), r, r)
+            rect = QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5)
+            r = rect.height() / 2
+            path.addRoundedRect(rect, r, r)
+            p.setPen(border)
             p.setBrush(QBrush(self._bg))
             p.drawPath(path)
 
