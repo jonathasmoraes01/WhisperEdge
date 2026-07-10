@@ -1,6 +1,12 @@
+import os
+import sys
+
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QPainter, QBrush, QColor, QFont, QPainterPath, QGuiApplication
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QMainWindow
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from theme import get_palette
 
 
 class BaseWindow(QMainWindow):
@@ -32,10 +38,11 @@ class BaseWindow(QMainWindow):
         title_bar_layout.setContentsMargins(0, 0, 0, 0)
 
         # Add the title label
-        title_label = QLabel('WhisperWriter')
+        _pal = get_palette()
+        title_label = QLabel('WiprFlow')
         title_label.setFont(QFont('Segoe UI', 12, QFont.Bold))
         title_label.setAlignment(Qt.AlignCenter)
-        title_label.setStyleSheet("color: #404040;")
+        title_label.setStyleSheet(f"color: {_pal.get('TEXT', '#e9e9f1')}; background: transparent;")
 
         # Create a widget for the close button
         close_button_widget = QWidget()
@@ -44,15 +51,16 @@ class BaseWindow(QMainWindow):
 
         close_button = QPushButton('×')
         close_button.setFixedSize(25, 25)
-        close_button.setStyleSheet("""
-            QPushButton {
+        close_button.setStyleSheet(f"""
+            QPushButton {{
                 background-color: transparent;
                 border: none;
-                color: #404040;
-            }
-            QPushButton:hover {
-                color: #000000;
-            }
+                color: {_pal.get('MUTED', '#9a9ab2')};
+                font-size: 16px;
+            }}
+            QPushButton:hover {{
+                color: {_pal.get('TEXT', '#e9e9f1')};
+            }}
         """)
         close_button.clicked.connect(self.handleCloseButton)
 
@@ -112,6 +120,8 @@ class BaseWindow(QMainWindow):
         path.addRoundedRect(QRectF(self.rect()), 20, 20)
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        painter.setBrush(QBrush(QColor(255, 255, 255, 220)))
+        _bg = QColor(get_palette().get('PANEL', '#1e1e27'))
+        _bg.setAlpha(240)
+        painter.setBrush(QBrush(_bg))
         painter.setPen(Qt.NoPen)
         painter.drawPath(path)
