@@ -43,6 +43,7 @@ class ResultThread(QThread):
         self.is_recording = False
         self.is_running = True
         self.sample_rate = None
+        self.speech_duration = 0.0  # WiprFlow: duracao da fala (segundos) p/ WPM
         self.mutex = QMutex()
 
     def stop_recording(self):
@@ -173,6 +174,7 @@ class ResultThread(QThread):
 
         audio_data = np.array(recording, dtype=np.int16)
         duration = len(audio_data) / self.sample_rate
+        self.speech_duration = duration  # WiprFlow: usado no calculo de WPM
 
         ConfigManager.console_print(f'Recording finished. Size: {audio_data.size} samples, Duration: {duration:.2f} seconds')
 

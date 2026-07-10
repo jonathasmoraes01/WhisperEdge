@@ -189,6 +189,9 @@ class WhisperWriterApp(QObject):
         """
         self.input_simulator.typewrite(result)
 
+        # WiprFlow: registra o dictado no historico e nas estatisticas.
+        self._record_dictation(result)
+
         if ConfigManager.get_config_value('misc', 'noise_on_completion'):
             AudioPlayer(os.path.join('assets', 'beep.wav')).play(block=True)
 
@@ -196,6 +199,21 @@ class WhisperWriterApp(QObject):
             self.start_result_thread()
         else:
             self.key_listener.start()
+
+    def _record_dictation(self, result):
+        """WiprFlow: salva o dictado no historico e atualiza as estatisticas."""
+        try:
+            text = (result or '').strip()
+            if not text:
+                return
+            word_count = len(text.split())
+            duration = getattr(self.result_thread, 'speech_duration', 0.0) if self.result_thread else 0.0
+            from history import add_entry, get_active_window_title
+            from stats import record
+            add_entry(text, get_active_window_title(), word_count)
+            record(word_count, duration)
+        except Exception as e:
+            ConfigManager.console_print(f'[record] falha ao registrar dictado: {e}')
 
     def run(self):
         """
