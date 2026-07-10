@@ -1,5 +1,18 @@
 import os
 import sys
+
+# Sob pythonw.exe (sem console) sys.stdout/stderr sao None e qualquer print() crasha.
+# Redireciona para devnull para o app rodar oculto sem console.
+if sys.stdout is None:
+    sys.stdout = open(os.devnull, 'w')
+if sys.stderr is None:
+    sys.stderr = open(os.devnull, 'w')
+
+# FIX (Windows): o ctranslate2 (faster-whisper) precisa carregar seu runtime nativo
+# OpenMP ANTES do PyQt5, senao o processo da segfault ao criar o modelo. Manter
+# este import antes de qualquer import do PyQt5.
+import ctranslate2  # noqa: F401  (ordem proposital)
+
 import time
 from audioplayer import AudioPlayer
 from pynput.keyboard import Controller
@@ -63,7 +76,11 @@ class WhisperWriterApp(QObject):
             self.status_window = StatusWindow()
 
         self.create_tray_icon()
-        self.main_window.show()
+
+        # Inicia a escuta do atalho automaticamente e fica na bandeja, sem abrir
+        # a janela principal (ideal para iniciar junto com o Windows). A janela e
+        # as configuracoes continuam acessiveis pelo icone da bandeja.
+        self.key_listener.start()
 
     def create_tray_icon(self):
         """
